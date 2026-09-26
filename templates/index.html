@@ -57,14 +57,17 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card p-3">
-                        <h5 class="card-title text-primary"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Công Ty</h5>
+                        <h5 class="card-title text-primary" id="title-company"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Công Ty</h5>
                         <form id="form-company">
                             <div class="mb-2"><label>Mã Công Ty</label><input type="text" id="c-id" class="form-control" required></div>
                             <div class="mb-2"><label>Tên Công Ty</label><input type="text" id="c-name" class="form-control" required></div>
                             <div class="mb-2"><label>Địa Chỉ</label><input type="text" id="c-addr" class="form-control"></div>
                             <div class="mb-2"><label>Số Điện Thoại</label><input type="text" id="c-phone" class="form-control"></div>
                             <div class="mb-2"><label>Người Đại Diện</label><input type="text" id="c-rep" class="form-control"></div>
-                            <button type="button" class="btn btn-primary w-100 mt-2" onclick="saveCompany()">Lưu Thông Tin</button>
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-primary flex-fill" onclick="saveCompany()">Lưu Thông Tin</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetFormCompany()">Làm Mới</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -87,14 +90,17 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card p-3">
-                        <h5 class="card-title text-primary"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Phòng Ban</h5>
+                        <h5 class="card-title text-primary" id="title-dept"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Phòng Ban</h5>
                         <form id="form-dept">
                             <div class="mb-2"><label>Mã Phòng Ban</label><input type="text" id="d-id" class="form-control" required></div>
                             <div class="mb-2"><label>Tên Phòng Ban</label><input type="text" id="d-name" class="form-control" required></div>
                             <div class="mb-2"><label>Thuộc Công Ty (Mã)</label><input type="text" id="d-cid" class="form-control"></div>
                             <div class="mb-2"><label>Trưởng Phòng</label><input type="text" id="d-head" class="form-control"></div>
                             <div class="mb-2"><label>Số Lượng Nhân Sự</label><input type="number" id="d-staff" class="form-control"></div>
-                            <button type="button" class="btn btn-primary w-100 mt-2" onclick="saveDept()">Lưu Thông Tin</button>
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-primary flex-fill" onclick="saveDept()">Lưu Thông Tin</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetFormDept()">Làm Mới</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -117,14 +123,17 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card p-3">
-                        <h5 class="card-title text-primary"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Công Trình</h5>
+                        <h5 class="card-title text-primary" id="title-project"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Công Trình</h5>
                         <form id="form-project">
                             <div class="mb-2"><label>Mã Công Trình</label><input type="text" id="p-id" class="form-control" required></div>
                             <div class="mb-2"><label>Tên Công Trình</label><input type="text" id="p-name" class="form-control" required></div>
                             <div class="mb-2"><label>Địa Điểm</label><input type="text" id="p-loc" class="form-control"></div>
                             <div class="mb-2"><label>Chủ Đầu Tư</label><input type="text" id="p-owner" class="form-control"></div>
                             <div class="mb-2"><label>Trạng Thái</label><input type="text" id="p-status" class="form-control"></div>
-                            <button type="button" class="btn btn-primary w-100 mt-2" onclick="saveProject()">Lưu Thông Tin</button>
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-primary flex-fill" onclick="saveProject()">Lưu Thông Tin</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetFormProject()">Làm Mới</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -147,14 +156,17 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card p-3">
-                        <h5 class="card-title text-primary"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Hạng Mục</h5>
+                        <h5 class="card-title text-primary" id="title-item"><i class="fa-solid fa-circle-plus"></i> Thêm/Sửa Hạng Mục</h5>
                         <form id="form-item">
                             <div class="mb-2"><label>Mã Hạng Mục</label><input type="text" id="i-id" class="form-control" required></div>
                             <div class="mb-2"><label>Tên Hạng Mục</label><input type="text" id="i-name" class="form-control" required></div>
                             <div class="mb-2"><label>Mã Công Trình</label><input type="text" id="i-pid" class="form-control"></div>
                             <div class="mb-2"><label>Kinh Phí (VNĐ)</label><input type="number" id="i-cost" class="form-control"></div>
                             <div class="mb-2"><label>Tiến Độ</label><input type="text" id="i-prog" class="form-control"></div>
-                            <button type="button" class="btn btn-primary w-100 mt-2" onclick="saveItem()">Lưu Thông Tin</button>
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-primary flex-fill" onclick="saveItem()">Lưu Thông Tin</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetFormItem()">Làm Mới</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -176,16 +188,65 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() { loadCompany(); });
+    document.addEventListener("DOMContentLoaded", function() {
+        seedInitialData();
+        loadCompany();
+    });
+
+    // --- KHỞI TẠO DỮ LIỆU MẪU BAN ĐẦU ---
+    function seedInitialData() {
+        fetch('/api/company').then(r=>r.json()).then(data=>{
+            if(data.length === 0) {
+                const sampleCompanies = [
+                    { ma_cty: "CTY01", ten_cty: "Xây Dựng Lò Khải", dia_chi: "Điện Biên", so_dien_thoai: "0865539242", nguoi_dai_dien: "Lò Văn Khải" },
+                    { ma_cty: "CTY02", ten_cty: "Tập Đoàn Hạ Tầng Việt", dia_chi: "Hà Nội", so_dien_thoai: "0912345678", nguoi_dai_dien: "Nguyễn Văn A" }
+                ];
+                sampleCompanies.forEach(c => fetch('/api/company', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(c) }));
+            }
+        });
+
+        fetch('/api/department').then(r=>r.json()).then(data=>{
+            if(data.length === 0) {
+                const sampleDepts = [
+                    { ma_pb: "PB01", ten_pb: "Phòng Kỹ Thuật & Thi Công", ma_cty: "CTY01", truong_phong: "Trần Văn B", so_nhan_su: 12 },
+                    { ma_pb: "PB02", ten_pb: "Phòng Kế Toán - Tài Chính", ma_cty: "CTY01", truong_phong: "Lê Thị C", so_nhan_su: 5 }
+                ];
+                sampleDepts.forEach(d => fetch('/api/department', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) }));
+            }
+        });
+
+        fetch('/api/project').then(r=>r.json()).then(data=>{
+            if(data.length === 0) {
+                const sampleProjects = [
+                    { ma_ct: "CT01", ten_ct: "Cầu Đường Điện Biên Phủ", dia_diem: "TP. Điện Biên", chu_dau_tu: "Sở GTVT Điện Biên", trang_thai: "Đang Thi Công" },
+                    { ma_ct: "CT02", ten_ct: "Khu Đô Thị Mới Nam Thành", dia_diem: "Hà Nội", chu_dau_tu: "Công ty Lò Khải", trang_thai: "Chuẩn Bị" }
+                ];
+                sampleProjects.forEach(p => fetch('/api/project', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(p) }));
+            }
+        });
+
+        fetch('/api/item').then(r=>r.json()).then(data=>{
+            if(data.length === 0) {
+                const sampleItems = [
+                    { ma_hm: "HM01", ten_hm: "Đổ Bê Tông Móng Cầu", ma_ct: "CT01", kinh_phi: 500000000, tien_do: "80%" },
+                    { ma_hm: "HM02", ten_hm: "Thảm Bê Tông Nhựa Đường", ma_ct: "CT01", kinh_phi: 350000000, tien_do: "30%" }
+                ];
+                sampleItems.forEach(i => fetch('/api/item', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(i) }));
+            }
+        });
+    }
 
     // --- CÔNG TY ---
+    let compData = [];
     function loadCompany() {
         fetch('/api/company').then(r=>r.json()).then(data=>{
+            compData = data;
             let h = '';
             data.forEach(c=>{
                 h += `<tr>
                     <td><b>${c.ma_cty}</b></td><td>${c.ten_cty}</td><td>${c.dia_chi||''}</td><td>${c.so_dien_thoai||''}</td><td>${c.nguoi_dai_dien||''}</td>
                     <td>
+                        <button class="btn btn-sm btn-warning me-1" onclick="editComp('${c.ma_cty}')"><i class="fa-solid fa-pen"></i> Sửa</button>
                         <button class="btn btn-sm btn-danger" onclick="delComp('${c.ma_cty}')"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
@@ -195,21 +256,42 @@
     }
     function saveCompany() {
         const body = { ma_cty: document.getElementById('c-id').value, ten_cty: document.getElementById('c-name').value, dia_chi: document.getElementById('c-addr').value, so_dien_thoai: document.getElementById('c-phone').value, nguoi_dai_dien: document.getElementById('c-rep').value };
+        if(!body.ma_cty || !body.ten_cty) return alert("Vui lòng nhập Mã và Tên Công ty!");
         fetch('/api/company', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
-        .then(r=>r.json()).then(res=>{ alert(res.msg); loadCompany(); });
+        .then(()=>{ resetFormCompany(); loadCompany(); });
+    }
+    function editComp(id) {
+        const c = compData.find(item => item.ma_cty === id);
+        if(c) {
+            document.getElementById('c-id').value = c.ma_cty;
+            document.getElementById('c-id').disabled = true;
+            document.getElementById('c-name').value = c.ten_cty;
+            document.getElementById('c-addr').value = c.dia_chi || '';
+            document.getElementById('c-phone').value = c.so_dien_thoai || '';
+            document.getElementById('c-rep').value = c.nguoi_dai_dien || '';
+        }
+    }
+    function resetFormCompany() {
+        document.getElementById('form-company').reset();
+        document.getElementById('c-id').disabled = false;
     }
     function delComp(id) {
         if(confirm("Xóa công ty này?")) fetch('/api/company/'+id, {method:'DELETE'}).then(()=>loadCompany());
     }
 
     // --- PHÒNG BAN ---
+    let deptData = [];
     function loadDept() {
         fetch('/api/department').then(r=>r.json()).then(data=>{
+            deptData = data;
             let h = '';
             data.forEach(d=>{
                 h += `<tr>
                     <td><b>${d.ma_pb}</b></td><td>${d.ten_pb}</td><td>${d.ma_cty||''}</td><td>${d.truong_phong||''}</td><td>${d.so_nhan_su||0}</td>
-                    <td><button class="btn btn-sm btn-danger" onclick="delDept('${d.ma_pb}')"><i class="fa-solid fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" onclick="editDept('${d.ma_pb}')"><i class="fa-solid fa-pen"></i> Sửa</button>
+                        <button class="btn btn-sm btn-danger" onclick="delDept('${d.ma_pb}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
             document.getElementById('tbl-dept').innerHTML = h;
@@ -217,21 +299,42 @@
     }
     function saveDept() {
         const body = { ma_pb: document.getElementById('d-id').value, ten_pb: document.getElementById('d-name').value, ma_cty: document.getElementById('d-cid').value, truong_phong: document.getElementById('d-head').value, so_nhan_su: document.getElementById('d-staff').value };
+        if(!body.ma_pb || !body.ten_pb) return alert("Vui lòng nhập Mã và Tên Phòng Ban!");
         fetch('/api/department', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
-        .then(r=>r.json()).then(res=>{ alert(res.msg); loadDept(); });
+        .then(()=>{ resetFormDept(); loadDept(); });
+    }
+    function editDept(id) {
+        const d = deptData.find(item => item.ma_pb === id);
+        if(d) {
+            document.getElementById('d-id').value = d.ma_pb;
+            document.getElementById('d-id').disabled = true;
+            document.getElementById('d-name').value = d.ten_pb;
+            document.getElementById('d-cid').value = d.ma_cty || '';
+            document.getElementById('d-head').value = d.truong_phong || '';
+            document.getElementById('d-staff').value = d.so_nhan_su || 0;
+        }
+    }
+    function resetFormDept() {
+        document.getElementById('form-dept').reset();
+        document.getElementById('d-id').disabled = false;
     }
     function delDept(id) {
         if(confirm("Xóa phòng ban này?")) fetch('/api/department/'+id, {method:'DELETE'}).then(()=>loadDept());
     }
 
     // --- CÔNG TRÌNH ---
+    let projData = [];
     function loadProject() {
         fetch('/api/project').then(r=>r.json()).then(data=>{
+            projData = data;
             let h = '';
             data.forEach(p=>{
                 h += `<tr>
                     <td><b>${p.ma_ct}</b></td><td>${p.ten_ct}</td><td>${p.dia_diem||''}</td><td>${p.chu_dau_tu||''}</td><td>${p.trang_thai||''}</td>
-                    <td><button class="btn btn-sm btn-danger" onclick="delProj('${p.ma_ct}')"><i class="fa-solid fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" onclick="editProj('${p.ma_ct}')"><i class="fa-solid fa-pen"></i> Sửa</button>
+                        <button class="btn btn-sm btn-danger" onclick="delProj('${p.ma_ct}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
             document.getElementById('tbl-project').innerHTML = h;
@@ -239,21 +342,42 @@
     }
     function saveProject() {
         const body = { ma_ct: document.getElementById('p-id').value, ten_ct: document.getElementById('p-name').value, dia_diem: document.getElementById('p-loc').value, chu_dau_tu: document.getElementById('p-owner').value, trang_thai: document.getElementById('p-status').value };
+        if(!body.ma_ct || !body.ten_ct) return alert("Vui lòng nhập Mã và Tên Công Trình!");
         fetch('/api/project', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
-        .then(r=>r.json()).then(res=>{ alert(res.msg); loadProject(); });
+        .then(()=>{ resetFormProject(); loadProject(); });
+    }
+    function editProj(id) {
+        const p = projData.find(item => item.ma_ct === id);
+        if(p) {
+            document.getElementById('p-id').value = p.ma_ct;
+            document.getElementById('p-id').disabled = true;
+            document.getElementById('p-name').value = p.ten_ct;
+            document.getElementById('p-loc').value = p.dia_diem || '';
+            document.getElementById('p-owner').value = p.chu_dau_tu || '';
+            document.getElementById('p-status').value = p.trang_thai || '';
+        }
+    }
+    function resetFormProject() {
+        document.getElementById('form-project').reset();
+        document.getElementById('p-id').disabled = false;
     }
     function delProj(id) {
         if(confirm("Xóa công trình này?")) fetch('/api/project/'+id, {method:'DELETE'}).then(()=>loadProject());
     }
 
     // --- HẠNG MỤC ---
+    let itemData = [];
     function loadItem() {
         fetch('/api/item').then(r=>r.json()).then(data=>{
+            itemData = data;
             let h = '';
             data.forEach(i=>{
                 h += `<tr>
-                    <td><b>${i.ma_hm}</b></td><td>${i.ten_hm}</td><td>${i.ma_ct||''}</td><td>${i.kinh_phi||0}</td><td>${i.tien_do||''}</td>
-                    <td><button class="btn btn-sm btn-danger" onclick="delItem('${i.ma_hm}')"><i class="fa-solid fa-trash"></i></button></td>
+                    <td><b>${i.ma_hm}</b></td><td>${i.ten_hm}</td><td>${i.ma_ct||''}</td><td>${Number(i.kinh_phi||0).toLocaleString('vi-VN')} VNĐ</td><td>${i.tien_do||''}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" onclick="editItem('${i.ma_hm}')"><i class="fa-solid fa-pen"></i> Sửa</button>
+                        <button class="btn btn-sm btn-danger" onclick="delItem('${i.ma_hm}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
             document.getElementById('tbl-item').innerHTML = h;
@@ -261,8 +385,24 @@
     }
     function saveItem() {
         const body = { ma_hm: document.getElementById('i-id').value, ten_hm: document.getElementById('i-name').value, ma_ct: document.getElementById('i-pid').value, kinh_phi: document.getElementById('i-cost').value, tien_do: document.getElementById('i-prog').value };
+        if(!body.ma_hm || !body.ten_hm) return alert("Vui lòng nhập Mã và Tên Hạng Mục!");
         fetch('/api/item', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
-        .then(r=>r.json()).then(res=>{ alert(res.msg); loadItem(); });
+        .then(()=>{ resetFormItem(); loadItem(); });
+    }
+    function editItem(id) {
+        const i = itemData.find(item => item.ma_hm === id);
+        if(i) {
+            document.getElementById('i-id').value = i.ma_hm;
+            document.getElementById('i-id').disabled = true;
+            document.getElementById('i-name').value = i.ten_hm;
+            document.getElementById('i-pid').value = i.ma_ct || '';
+            document.getElementById('i-cost').value = i.kinh_phi || 0;
+            document.getElementById('i-prog').value = i.tien_do || '';
+        }
+    }
+    function resetFormItem() {
+        document.getElementById('form-item').reset();
+        document.getElementById('i-id').disabled = false;
     }
     function delItem(id) {
         if(confirm("Xóa hạng mục này?")) fetch('/api/item/'+id, {method:'DELETE'}).then(()=>loadItem());
