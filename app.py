@@ -3,6 +3,8 @@ from models import init_db
 from services import CompanyService, DepartmentService, ProjectService, ItemService
 
 app = Flask(__name__)
+
+# Khởi tạo cơ sở dữ liệu
 init_db()
 
 @app.route("/")
@@ -10,20 +12,15 @@ def home():
     return render_template("index.html")
 
 # --- API CÔNG TY ---
-@app.route("/api/company", methods=["GET"])
-def get_companies():
-    return jsonify([c.__dict__ for c in CompanyService.get_all()])
-
-@app.route("/api/company", methods=["POST", "PUT"])
-def save_company():
-    try:
+@app.route("/api/company", methods=["GET", "POST"])
+def handle_company():
+    if request.method == "POST":
         CompanyService.save(request.json)
         return jsonify({"msg": "OK"})
-    except ValueError as e:
-        return jsonify({"msg": str(e)}), 400
+    return jsonify([c.__dict__ for c in CompanyService.get_all()])
 
 @app.route("/api/company/<id>", methods=["PUT", "DELETE"])
-def handle_company_id(id):
+def update_delete_company(id):
     if request.method == "DELETE":
         CompanyService.delete(id)
     else:
@@ -31,20 +28,15 @@ def handle_company_id(id):
     return jsonify({"msg": "OK"})
 
 # --- API PHÒNG BAN ---
-@app.route("/api/department", methods=["GET"])
-def get_depts():
-    return jsonify([d.__dict__ for d in DepartmentService.get_all()])
-
-@app.route("/api/department", methods=["POST", "PUT"])
-def save_dept():
-    try:
+@app.route("/api/department", methods=["GET", "POST"])
+def handle_department():
+    if request.method == "POST":
         DepartmentService.save(request.json)
         return jsonify({"msg": "OK"})
-    except ValueError as e:
-        return jsonify({"msg": str(e)}), 400
+    return jsonify([d.__dict__ for d in DepartmentService.get_all()])
 
 @app.route("/api/department/<id>", methods=["PUT", "DELETE"])
-def handle_dept_id(id):
+def update_delete_department(id):
     if request.method == "DELETE":
         DepartmentService.delete(id)
     else:
@@ -52,20 +44,15 @@ def handle_dept_id(id):
     return jsonify({"msg": "OK"})
 
 # --- API CÔNG TRÌNH ---
-@app.route("/api/project", methods=["GET"])
-def get_projects():
-    return jsonify([p.__dict__ for p in ProjectService.get_all()])
-
-@app.route("/api/project", methods=["POST", "PUT"])
-def save_project():
-    try:
+@app.route("/api/project", methods=["GET", "POST"])
+def handle_project():
+    if request.method == "POST":
         ProjectService.save(request.json)
         return jsonify({"msg": "OK"})
-    except ValueError as e:
-        return jsonify({"msg": str(e)}), 400
+    return jsonify([p.__dict__ for p in ProjectService.get_all()])
 
 @app.route("/api/project/<id>", methods=["PUT", "DELETE"])
-def handle_project_id(id):
+def update_delete_project(id):
     if request.method == "DELETE":
         ProjectService.delete(id)
     else:
@@ -73,20 +60,15 @@ def handle_project_id(id):
     return jsonify({"msg": "OK"})
 
 # --- API HẠNG MỤC ---
-@app.route("/api/item", methods=["GET"])
-def get_items():
-    return jsonify([i.__dict__ for i in ItemService.get_all()])
-
-@app.route("/api/item", methods=["POST", "PUT"])
-def save_item():
-    try:
+@app.route("/api/item", methods=["GET", "POST"])
+def handle_item():
+    if request.method == "POST":
         ItemService.save(request.json)
         return jsonify({"msg": "OK"})
-    except ValueError as e:
-        return jsonify({"msg": str(e)}), 400
+    return jsonify([i.__dict__ for i in ItemService.get_all()])
 
 @app.route("/api/item/<id>", methods=["PUT", "DELETE"])
-def handle_item_id(id):
+def update_delete_item(id):
     if request.method == "DELETE":
         ItemService.delete(id)
     else:
