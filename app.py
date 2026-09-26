@@ -127,14 +127,17 @@ HTML_TEMPLATE = """
             <div class="row g-4">
                 <div class="col-lg-4">
                     <div class="card p-4">
-                        <h5 class="card-title fw-bold text-primary mb-3"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Công Ty</h5>
+                        <h5 class="card-title fw-bold text-primary mb-3" id="companyFormTitle"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Công Ty</h5>
                         <form id="companyForm">
                             <div class="mb-2"><label class="form-label">Mã Công Ty</label><input type="text" id="ma_cty" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Tên Công Ty</label><input type="text" id="ten_cty" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Địa Chỉ/Địa Điểm</label><input type="text" id="dia_chi_cty" class="form-control"></div>
                             <div class="mb-2"><label class="form-label">Số Điện Thoại</label><input type="text" id="sdt_cty" class="form-control"></div>
                             <div class="mb-3"><label class="form-label">Người Đại Diện</label><input type="text" id="nguoi_dd" class="form-control"></div>
-                            <button type="button" onclick="saveCompany()" class="btn btn-primary w-100 fw-bold">Lưu Thông Tin</button>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="btnSaveCompany" onclick="saveCompany()" class="btn btn-primary fw-bold">Lưu Thông Tin</button>
+                                <button type="button" id="btnCancelCompany" onclick="resetCompanyForm()" class="btn btn-outline-secondary d-none">Hủy Sửa</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -157,14 +160,17 @@ HTML_TEMPLATE = """
             <div class="row g-4">
                 <div class="col-lg-4">
                     <div class="card p-4">
-                        <h5 class="card-title fw-bold text-primary mb-3"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Phòng Ban</h5>
+                        <h5 class="card-title fw-bold text-primary mb-3" id="deptFormTitle"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Phòng Ban</h5>
                         <form id="deptForm">
                             <div class="mb-2"><label class="form-label">Mã Phòng Ban</label><input type="text" id="ma_pb" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Tên Phòng Ban</label><input type="text" id="ten_pb" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Thuộc Công Ty (Mã)</label><input type="text" id="ma_cty_pb" class="form-control"></div>
                             <div class="mb-2"><label class="form-label">Trưởng Phòng</label><input type="text" id="truong_phong" class="form-control"></div>
                             <div class="mb-3"><label class="form-label">Số Lượng Nhân Sự</label><input type="number" id="so_nhan_su" class="form-control"></div>
-                            <button type="button" onclick="saveDept()" class="btn btn-primary w-100 fw-bold">Lưu Thông Tin</button>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="btnSaveDept" onclick="saveDept()" class="btn btn-primary fw-bold">Lưu Thông Tin</button>
+                                <button type="button" id="btnCancelDept" onclick="resetDeptForm()" class="btn btn-outline-secondary d-none">Hủy Sửa</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -187,14 +193,17 @@ HTML_TEMPLATE = """
             <div class="row g-4">
                 <div class="col-lg-4">
                     <div class="card p-4">
-                        <h5 class="card-title fw-bold text-primary mb-3"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Công Trình</h5>
+                        <h5 class="card-title fw-bold text-primary mb-3" id="projectFormTitle"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Công Trình</h5>
                         <form id="projectForm">
                             <div class="mb-2"><label class="form-label">Mã Công Trình</label><input type="text" id="ma_ct" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Tên Công Trình</label><input type="text" id="ten_ct" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Địa Điểm</label><input type="text" id="dia_diem_ct" class="form-control"></div>
                             <div class="mb-2"><label class="form-label">Chủ Đầu Tư</label><input type="text" id="chu_dau_tu" class="form-control"></div>
                             <div class="mb-3"><label class="form-label">Trạng Thái/Tiến Độ</label><input type="text" id="trang_thai_ct" class="form-control"></div>
-                            <button type="button" onclick="saveProject()" class="btn btn-primary w-100 fw-bold">Lưu Thông Tin</button>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="btnSaveProject" onclick="saveProject()" class="btn btn-primary fw-bold">Lưu Thông Tin</button>
+                                <button type="button" id="btnCancelProject" onclick="resetProjectForm()" class="btn btn-outline-secondary d-none">Hủy Sửa</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -217,14 +226,17 @@ HTML_TEMPLATE = """
             <div class="row g-4">
                 <div class="col-lg-4">
                     <div class="card p-4">
-                        <h5 class="card-title fw-bold text-primary mb-3"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Hạng Mục</h5>
+                        <h5 class="card-title fw-bold text-primary mb-3" id="itemFormTitle"><i class="fa-solid fa-plus-circle me-2"></i>Thêm Hạng Mục</h5>
                         <form id="itemForm">
                             <div class="mb-2"><label class="form-label">Mã Hạng Mục</label><input type="text" id="ma_hm" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Tên Hạng Mục</label><input type="text" id="ten_hm" class="form-control" required></div>
                             <div class="mb-2"><label class="form-label">Thuộc Công Trình (Mã)</label><input type="text" id="ma_ct_hm" class="form-control"></div>
                             <div class="mb-2"><label class="form-label">Kinh Phí (VND)</label><input type="number" id="kinh_phi" class="form-control"></div>
                             <div class="mb-3"><label class="form-label">Tiến Độ Thi Công</label><input type="text" id="tien_do" class="form-control"></div>
-                            <button type="button" onclick="saveItem()" class="btn btn-primary w-100 fw-bold">Lưu Thông Tin</button>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="btnSaveItem" onclick="saveItem()" class="btn btn-primary fw-bold">Lưu Thông Tin</button>
+                                <button type="button" id="btnCancelItem" onclick="resetItemForm()" class="btn btn-outline-secondary d-none">Hủy Sửa</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -245,21 +257,19 @@ HTML_TEMPLATE = """
     </div>
 
     <script>
-        // Hàm chuyển Tab trực tiếp
-        function switchTab(tabName) {
-            // Ẩn tất cả nội dung tab
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            // Bỏ active ở tất cả các nút
-            document.querySelectorAll('#mainTabs .nav-link').forEach(el => el.classList.remove('active'));
+        let isEditingCompany = false;
+        let isEditingDept = false;
+        let isEditingProject = false;
+        let isEditingItem = false;
 
-            // Hiển thị tab được chọn
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#mainTabs .nav-link').forEach(el => el.classList.remove('active'));
             document.getElementById('pane-' + tabName).classList.add('active');
             
-            // Active nút bấm tương ứng
             const btnIndex = {'company': 0, 'dept': 1, 'project': 2, 'item': 3}[tabName];
             document.querySelectorAll('#mainTabs .nav-link')[btnIndex].classList.add('active');
 
-            // Load dữ liệu tab tương ứng
             if(tabName === 'company') loadCompany();
             if(tabName === 'dept') loadDept();
             if(tabName === 'project') loadProject();
@@ -275,10 +285,14 @@ HTML_TEMPLATE = """
             data.forEach(c => {
                 tbody.innerHTML += `<tr>
                     <td class="fw-bold">${c[0]}</td><td>${c[1]}</td><td>${c[2]||'-'}</td><td>${c[3]||'-'}</td><td>${c[4]||'-'}</td>
-                    <td><button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/company', '${c[0]}', loadCompany)"><i class="fa-solid fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" onclick="editCompany('${c[0]}','${c[1]}','${c[2]||''}','${c[3]||''}','${c[4]||''}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/company', '${c[0]}', loadCompany)"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
         }
+
         async function saveCompany() {
             const payload = {
                 ma_cty: document.getElementById('ma_cty').value, ten_cty: document.getElementById('ten_cty').value,
@@ -286,9 +300,38 @@ HTML_TEMPLATE = """
                 nguoi_dai_dien: document.getElementById('nguoi_dd').value
             };
             if(!payload.ma_cty || !payload.ten_cty) { alert('Vui lòng nhập Mã và Tên công ty!'); return; }
-            await fetch('/api/company', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            document.getElementById('companyForm').reset();
+            
+            const url = isEditingCompany ? `/api/company/${payload.ma_cty}` : '/api/company';
+            const method = isEditingCompany ? 'PUT' : 'POST';
+
+            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            resetCompanyForm();
             loadCompany();
+        }
+
+        function editCompany(ma, ten, diaChi, sdt, nguoiDD) {
+            isEditingCompany = true;
+            document.getElementById('ma_cty').value = ma;
+            document.getElementById('ma_cty').disabled = true;
+            document.getElementById('ten_cty').value = ten;
+            document.getElementById('dia_chi_cty').value = diaChi;
+            document.getElementById('sdt_cty').value = sdt;
+            document.getElementById('nguoi_dd').value = nguoiDD;
+
+            document.getElementById('companyFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square me-2"></i>Sửa Công Ty';
+            document.getElementById('btnSaveCompany').className = 'btn btn-warning fw-bold';
+            document.getElementById('btnSaveCompany').innerText = 'Cập Nhật';
+            document.getElementById('btnCancelCompany').classList.remove('d-none');
+        }
+
+        function resetCompanyForm() {
+            isEditingCompany = false;
+            document.getElementById('companyForm').reset();
+            document.getElementById('ma_cty').disabled = false;
+            document.getElementById('companyFormTitle').innerHTML = '<i class="fa-solid fa-plus-circle me-2"></i>Thêm Công Ty';
+            document.getElementById('btnSaveCompany').className = 'btn btn-primary fw-bold';
+            document.getElementById('btnSaveCompany').innerText = 'Lưu Thông Tin';
+            document.getElementById('btnCancelCompany').classList.add('d-none');
         }
 
         // --- PHÒNG BAN ---
@@ -300,10 +343,14 @@ HTML_TEMPLATE = """
             data.forEach(d => {
                 tbody.innerHTML += `<tr>
                     <td class="fw-bold">${d[0]}</td><td>${d[1]}</td><td>${d[2]||'-'}</td><td>${d[3]||'-'}</td><td>${d[4]||0}</td>
-                    <td><button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/department', '${d[0]}', loadDept)"><i class="fa-solid fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" onclick="editDept('${d[0]}','${d[1]}','${d[2]||''}','${d[3]||''}','${d[4]||0}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/department', '${d[0]}', loadDept)"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
         }
+
         async function saveDept() {
             const payload = {
                 ma_pb: document.getElementById('ma_pb').value, ten_pb: document.getElementById('ten_pb').value,
@@ -311,9 +358,38 @@ HTML_TEMPLATE = """
                 so_nhan_su: document.getElementById('so_nhan_su').value
             };
             if(!payload.ma_pb || !payload.ten_pb) { alert('Vui lòng nhập Mã và Tên phòng ban!'); return; }
-            await fetch('/api/department', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            document.getElementById('deptForm').reset();
+
+            const url = isEditingDept ? `/api/department/${payload.ma_pb}` : '/api/department';
+            const method = isEditingDept ? 'PUT' : 'POST';
+
+            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            resetDeptForm();
             loadDept();
+        }
+
+        function editDept(ma, ten, maCty, truongPhong, soNhanSu) {
+            isEditingDept = true;
+            document.getElementById('ma_pb').value = ma;
+            document.getElementById('ma_pb').disabled = true;
+            document.getElementById('ten_pb').value = ten;
+            document.getElementById('ma_cty_pb').value = maCty;
+            document.getElementById('truong_phong').value = truongPhong;
+            document.getElementById('so_nhan_su').value = soNhanSu;
+
+            document.getElementById('deptFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square me-2"></i>Sửa Phòng Ban';
+            document.getElementById('btnSaveDept').className = 'btn btn-warning fw-bold';
+            document.getElementById('btnSaveDept').innerText = 'Cập Nhật';
+            document.getElementById('btnCancelDept').classList.remove('d-none');
+        }
+
+        function resetDeptForm() {
+            isEditingDept = false;
+            document.getElementById('deptForm').reset();
+            document.getElementById('ma_pb').disabled = false;
+            document.getElementById('deptFormTitle').innerHTML = '<i class="fa-solid fa-plus-circle me-2"></i>Thêm Phòng Ban';
+            document.getElementById('btnSaveDept').className = 'btn btn-primary fw-bold';
+            document.getElementById('btnSaveDept').innerText = 'Lưu Thông Tin';
+            document.getElementById('btnCancelDept').classList.add('d-none');
         }
 
         // --- CÔNG TRÌNH ---
@@ -325,10 +401,14 @@ HTML_TEMPLATE = """
             data.forEach(p => {
                 tbody.innerHTML += `<tr>
                     <td class="fw-bold">${p[0]}</td><td>${p[1]}</td><td>${p[2]||'-'}</td><td>${p[3]||'-'}</td><td><span class="badge bg-info text-dark">${p[4]||'-'}</span></td>
-                    <td><button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/project', '${p[0]}', loadProject)"><i class="fa-solid fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" onclick="editProject('${p[0]}','${p[1]}','${p[2]||''}','${p[3]||''}','${p[4]||''}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/project', '${p[0]}', loadProject)"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
         }
+
         async function saveProject() {
             const payload = {
                 ma_ct: document.getElementById('ma_ct').value, ten_ct: document.getElementById('ten_ct').value,
@@ -336,9 +416,38 @@ HTML_TEMPLATE = """
                 trang_thai: document.getElementById('trang_thai_ct').value
             };
             if(!payload.ma_ct || !payload.ten_ct) { alert('Vui lòng nhập Mã và Tên công trình!'); return; }
-            await fetch('/api/project', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            document.getElementById('projectForm').reset();
+
+            const url = isEditingProject ? `/api/project/${payload.ma_ct}` : '/api/project';
+            const method = isEditingProject ? 'PUT' : 'POST';
+
+            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            resetProjectForm();
             loadProject();
+        }
+
+        function editProject(ma, ten, diaDiem, chuDauTu, trangThai) {
+            isEditingProject = true;
+            document.getElementById('ma_ct').value = ma;
+            document.getElementById('ma_ct').disabled = true;
+            document.getElementById('ten_ct').value = ten;
+            document.getElementById('dia_diem_ct').value = diaDiem;
+            document.getElementById('chu_dau_tu').value = chuDauTu;
+            document.getElementById('trang_thai_ct').value = trangThai;
+
+            document.getElementById('projectFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square me-2"></i>Sửa Công Trình';
+            document.getElementById('btnSaveProject').className = 'btn btn-warning fw-bold';
+            document.getElementById('btnSaveProject').innerText = 'Cập Nhật';
+            document.getElementById('btnCancelProject').classList.remove('d-none');
+        }
+
+        function resetProjectForm() {
+            isEditingProject = false;
+            document.getElementById('projectForm').reset();
+            document.getElementById('ma_ct').disabled = false;
+            document.getElementById('projectFormTitle').innerHTML = '<i class="fa-solid fa-plus-circle me-2"></i>Thêm Công Trình';
+            document.getElementById('btnSaveProject').className = 'btn btn-primary fw-bold';
+            document.getElementById('btnSaveProject').innerText = 'Lưu Thông Tin';
+            document.getElementById('btnCancelProject').classList.add('d-none');
         }
 
         // --- HẠNG MỤC ---
@@ -350,10 +459,14 @@ HTML_TEMPLATE = """
             data.forEach(i => {
                 tbody.innerHTML += `<tr>
                     <td class="fw-bold">${i[0]}</td><td>${i[1]}</td><td>${i[2]||'-'}</td><td>${i[3]? Number(i[3]).toLocaleString() : 0} VNĐ</td><td>${i[4]||'-'}</td>
-                    <td><button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/item', '${i[0]}', loadItem)"><i class="fa-solid fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" onclick="editItem('${i[0]}','${i[1]}','${i[2]||''}','${i[3]||0}','${i[4]||''}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord('/api/item', '${i[0]}', loadItem)"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>`;
             });
         }
+
         async function saveItem() {
             const payload = {
                 ma_hm: document.getElementById('ma_hm').value, ten_hm: document.getElementById('ten_hm').value,
@@ -361,9 +474,38 @@ HTML_TEMPLATE = """
                 tien_do: document.getElementById('tien_do').value
             };
             if(!payload.ma_hm || !payload.ten_hm) { alert('Vui lòng nhập Mã và Tên hạng mục!'); return; }
-            await fetch('/api/item', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            document.getElementById('itemForm').reset();
+
+            const url = isEditingItem ? `/api/item/${payload.ma_hm}` : '/api/item';
+            const method = isEditingItem ? 'PUT' : 'POST';
+
+            await fetch(url, { method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            resetItemForm();
             loadItem();
+        }
+
+        function editItem(ma, ten, maCt, kinhPhi, tienDo) {
+            isEditingItem = true;
+            document.getElementById('ma_hm').value = ma;
+            document.getElementById('ma_hm').disabled = true;
+            document.getElementById('ten_hm').value = ten;
+            document.getElementById('ma_ct_hm').value = maCt;
+            document.getElementById('kinh_phi').value = kinhPhi;
+            document.getElementById('tien_do').value = tienDo;
+
+            document.getElementById('itemFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square me-2"></i>Sửa Hạng Mục';
+            document.getElementById('btnSaveItem').className = 'btn btn-warning fw-bold';
+            document.getElementById('btnSaveItem').innerText = 'Cập Nhật';
+            document.getElementById('btnCancelItem').classList.remove('d-none');
+        }
+
+        function resetItemForm() {
+            isEditingItem = false;
+            document.getElementById('itemForm').reset();
+            document.getElementById('ma_hm').disabled = false;
+            document.getElementById('itemFormTitle').innerHTML = '<i class="fa-solid fa-plus-circle me-2"></i>Thêm Hạng Mục';
+            document.getElementById('btnSaveItem').className = 'btn btn-primary fw-bold';
+            document.getElementById('btnSaveItem').innerText = 'Lưu Thông Tin';
+            document.getElementById('btnCancelItem').classList.add('d-none');
         }
 
         // --- HÀM XÓA CHUNG ---
@@ -374,7 +516,6 @@ HTML_TEMPLATE = """
             }
         }
 
-        // Khởi tạo tab đầu tiên
         loadCompany();
     </script>
 </body>
@@ -388,6 +529,7 @@ def home():
     return render_template_string(HTML_TEMPLATE)
 
 
+# 1. CÔNG TY
 @app.route("/api/company", methods=["GET", "POST"])
 def handle_company():
     conn = sqlite3.connect("construction_management.db")
@@ -413,16 +555,34 @@ def handle_company():
     return jsonify(res)
 
 
-@app.route("/api/company/<id>", methods=["DELETE"])
-def delete_company(id):
+@app.route("/api/company/<id>", methods=["PUT", "DELETE"])
+def update_delete_company(id):
     conn = sqlite3.connect("construction_management.db")
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM công_ty WHERE ma_cty = ?", (id,))
+    if request.method == "PUT":
+        d = request.json
+        cursor.execute(
+            """
+            UPDATE công_ty 
+            SET ten_cty=?, dia_chi=?, so_dien_thoai=?, nguoi_dai_dien=? 
+            WHERE ma_cty=?
+        """,
+            (
+                d["ten_cty"],
+                d["dia_chi"],
+                d["so_dien_thoai"],
+                d["nguoi_dai_dien"],
+                id,
+            ),
+        )
+    elif request.method == "DELETE":
+        cursor.execute("DELETE FROM công_ty WHERE ma_cty = ?", (id,))
     conn.commit()
     conn.close()
     return jsonify({"msg": "OK"})
 
 
+# 2. PHÒNG BAN
 @app.route("/api/department", methods=["GET", "POST"])
 def handle_department():
     conn = sqlite3.connect("construction_management.db")
@@ -448,16 +608,28 @@ def handle_department():
     return jsonify(res)
 
 
-@app.route("/api/department/<id>", methods=["DELETE"])
-def delete_department(id):
+@app.route("/api/department/<id>", methods=["PUT", "DELETE"])
+def update_delete_department(id):
     conn = sqlite3.connect("construction_management.db")
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM phong_ban WHERE ma_pb = ?", (id,))
+    if request.method == "PUT":
+        d = request.json
+        cursor.execute(
+            """
+            UPDATE phong_ban 
+            SET ten_pb=?, ma_cty=?, truong_phong=?, so_nhan_su=? 
+            WHERE ma_pb=?
+        """,
+            (d["ten_pb"], d["ma_cty"], d["truong_phong"], d["so_nhan_su"], id),
+        )
+    elif request.method == "DELETE":
+        cursor.execute("DELETE FROM phong_ban WHERE ma_pb = ?", (id,))
     conn.commit()
     conn.close()
     return jsonify({"msg": "OK"})
 
 
+# 3. CÔNG TRÌNH
 @app.route("/api/project", methods=["GET", "POST"])
 def handle_project():
     conn = sqlite3.connect("construction_management.db")
@@ -483,16 +655,28 @@ def handle_project():
     return jsonify(res)
 
 
-@app.route("/api/project/<id>", methods=["DELETE"])
-def delete_project(id):
+@app.route("/api/project/<id>", methods=["PUT", "DELETE"])
+def update_delete_project(id):
     conn = sqlite3.connect("construction_management.db")
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM cong_trinh WHERE ma_ct = ?", (id,))
+    if request.method == "PUT":
+        d = request.json
+        cursor.execute(
+            """
+            UPDATE cong_trinh 
+            SET ten_ct=?, dia_diem=?, chu_dau_tu=?, trang_thai=? 
+            WHERE ma_ct=?
+        """,
+            (d["ten_ct"], d["dia_diem"], d["chu_dau_tu"], d["trang_thai"], id),
+        )
+    elif request.method == "DELETE":
+        cursor.execute("DELETE FROM cong_trinh WHERE ma_ct = ?", (id,))
     conn.commit()
     conn.close()
     return jsonify({"msg": "OK"})
 
 
+# 4. HẠNG MỤC
 @app.route("/api/item", methods=["GET", "POST"])
 def handle_item():
     conn = sqlite3.connect("construction_management.db")
@@ -512,11 +696,22 @@ def handle_item():
     return jsonify(res)
 
 
-@app.route("/api/item/<id>", methods=["DELETE"])
-def delete_item(id):
+@app.route("/api/item/<id>", methods=["PUT", "DELETE"])
+def update_delete_item(id):
     conn = sqlite3.connect("construction_management.db")
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM hang_muc WHERE ma_hm = ?", (id,))
+    if request.method == "PUT":
+        d = request.json
+        cursor.execute(
+            """
+            UPDATE hang_muc 
+            SET ten_hm=?, ma_ct=?, kinh_phi=?, tien_do=? 
+            WHERE ma_hm=?
+        """,
+            (d["ten_hm"], d["ma_ct"], d["kinh_phi"], d["tien_do"], id),
+        )
+    elif request.method == "DELETE":
+        cursor.execute("DELETE FROM hang_muc WHERE ma_hm = ?", (id,))
     conn.commit()
     conn.close()
     return jsonify({"msg": "OK"})
