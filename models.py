@@ -35,7 +35,7 @@ def init_db():
         )
     """)
 
-    # 3. Bảng Công Trình (giữ đúng tên cong_trinh)
+    # 3. Bảng Công Trình
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS cong_trinh (
             ma_ct TEXT PRIMARY KEY,
@@ -57,7 +57,7 @@ def init_db():
         )
     """)
 
-    # 5. Bảng Nguời Dùng (Bổ sung mới cho Đăng nhập / Đăng ký)
+    # 5. Bảng Users
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,6 +67,41 @@ def init_db():
             role TEXT DEFAULT 'admin'
         )
     """)
+
+    # --- CHÈN DỮ LIỆU MẪU BAN ĐẦU (Nếu chưa có) ---
+    cursor.execute("SELECT COUNT(*) FROM cong_ty")
+    if cursor.fetchone()[0] == 0:
+        # Mẫu Công Ty
+        cursor.execute("""
+            INSERT INTO cong_ty (ma_cty, ten_cty, dia_chi, so_dien_thoai, nguoi_dai_dien)
+            VALUES 
+            ('CTY01', 'Công ty Cổ phần Xây dựng Lò Khải', 'Điện Biên', '0865539242', 'Lò Văn Khải'),
+            ('CTY02', 'Tập đoàn Xây dựng Đặt Hàng', 'Hà Nội', '0912345678', 'Nguyễn Văn A')
+        """)
+
+        # Mẫu Phòng Ban
+        cursor.execute("""
+            INSERT INTO phong_ban (ma_pb, ten_pb, ma_cty, truong_phong, so_nhan_su)
+            VALUES 
+            ('PB01', 'Phòng Kỹ thuật & Thi công', 'CTY01', 'Lò Văn Khải', 15),
+            ('PB02', 'Phòng Kế hoạch - Tài chính', 'CTY01', 'Trần Thị B', 8)
+        """)
+
+        # Mẫu Công Trình
+        cursor.execute("""
+            INSERT INTO cong_trinh (ma_ct, ten_ct, dia_diem, chu_dau_tu, trang_thai)
+            VALUES 
+            ('CT01', 'Xây dựng Trường học Mường Thanh', 'Điện Biên', 'Sở GD&ĐT Điện Biên', 'Đang thi công'),
+            ('CT02', 'Cầu bê tông Kênh 1', 'Sơn La', 'UBND Huyện', 'Hoàn thành')
+        """)
+
+        # Mẫu Hạng Mục
+        cursor.execute("""
+            INSERT INTO hang_muc (ma_hm, ten_hm, ma_ct, kinh_phi, tien_do)
+            VALUES 
+            ('HM01', 'Thi công móng và phần ngầm', 'CT01', 500000000, '100%'),
+            ('HM02', 'Xây thô tầng 1 & tầng 2', 'CT01', 800000000, '45%')
+        """)
 
     conn.commit()
     conn.close()
@@ -118,5 +153,5 @@ class User:
         self.role = role
 
 
-# Gọi khởi tạo toàn bộ CSDL
+# Tự động khởi tạo DB khi import
 init_db()
