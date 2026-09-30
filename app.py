@@ -12,14 +12,24 @@ init_db()
 # --- TRANG CHỦ / DANG NHAP / DANG KY / DANG XUAT ---
 @app.route("/")
 def index():
-    # Đã bỏ đoạn 'if user not in session' để Firebase JS có thể tải giao diện chính thành công
     companies = CompanyService.get_all()
     departments = DepartmentService.get_all()
     projects = ProjectService.get_all()
     items = ItemService.get_all()
 
-    # Lấy tên hiển thị nếu có, hoặc để mặc định
-    user_fullname = session.get('user_fullname', 'Người Dùng Firebase')
+    # Lấy thông tin user đăng nhập từ Session
+    user_fullname = session.get('user_fullname')
+    username = session.get('user')
+
+    # Nếu chưa có user_fullname trong session, thử tra cứu trong CSDL theo username
+    if not user_fullname and username:
+        # Tìm user trong CSDL (nếu UserService có hàm get_by_username hoặc tương tự)
+        # Hoặc lấy tạm tên đăng nhập
+        user_fullname = username
+
+    # Trường hợp chưa đăng nhập/chưa lưu session
+    if not user_fullname:
+        user_fullname = 'Khách'
 
     return render_template(
         'index.html',
@@ -34,25 +44,25 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Xử lý trường hợp có gửi dữ liệu JSON từ Firebase JS
+        # Xử lý khi đăng nhập qua Form hoặc API JSON
         data = request.get_json(silent=True) or request.form
-        email_or_username = data.get('email') or data.get('username')
-        
-        if email_or_username:
-            session['user'] = email_or_username
-            session['user_fullname'] = email_or_username.split('@')[0]
-            return jsonify({'status': 'success', 'redirect': '/'})
+        username = data.get('username') or data.get('email')
+        password = data.get('password')
 
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = UserService.check_login(username, password)
-        if user:
-            session['user'] = user.username
-            session['user_fullname'] = user.full_name
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html', msg="Tài khoản hoặc mật khẩu không đúng!", msg_type="danger")
-            
+        if username and password:
+            user = UserService.check_login(username, password)
+            if user:
+                session['user'] = user.username
+                session['user_fullname'] = getattr(user, 'full_name', user.username)
+                
+                if request.is_json:
+                    return jsonify({'status': 'success', 'redirect': '/'})
+                return redirect(url_for('index'))
+            else:
+                if request.is_json:
+                    return jsonify({'status': 'error', 'message': 'Tài khoản hoặc mật khẩu không đúng!'}), 400
+                return render_template('login.html', msg="Tài khoản hoặc mật khẩu không đúng!", msg_type="danger")
+
     return render_template('login.html')
 
 
