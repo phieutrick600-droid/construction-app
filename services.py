@@ -1,4 +1,4 @@
-from models import get_db_connection, Company, Department, Project, Item
+from models import get_db_connection, Company, Department, Project, Item, User
 
 class CompanyService:
     @staticmethod
