@@ -127,7 +127,7 @@
         alertBox.classList.remove('d-none');
     }
 
-    // XỬ LÝ ĐĂNG KÝ (Cập nhật lưu Họ tên)
+    // XỬ LÝ ĐĂNG KÝ (Lưu Họ tên vào Firebase Profile & Flask Database)
     document.getElementById('form-register').addEventListener('submit', async (e) => {
         e.preventDefault();
         const fullname = document.getElementById('reg-fullname').value.trim();
@@ -136,10 +136,11 @@
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            // Lưu Họ và tên vào thông tin hồ sơ của Firebase User
+            
+            // 1. Cập nhật Họ và Tên vào tài khoản Firebase
             await updateProfile(userCredential.user, { displayName: fullname });
 
-            // Lưu thông tin đăng ký vào backend
+            // 2. Gửi thông tin Họ và Tên về backend Flask để lưu vào CSDL
             const formData = new FormData();
             formData.append('username', email);
             formData.append('password', password);
@@ -152,7 +153,7 @@
         }
     });
 
-    // XỬ LÝ ĐĂNG NHẬP (Lưu Session lên Flask)
+    // XỬ LÝ ĐĂNG NHẬP (Truyền Họ tên đã đăng ký sang Flask Session)
     document.getElementById('form-login').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value.trim();
@@ -162,13 +163,13 @@
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Gửi dữ liệu đăng nhập về Flask Backend để thiết lập Session
-            const res = await fetch('/login', {
+            // Truyền email và Họ tên người dùng lấy từ Firebase displayName về Flask
+            await fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email: user.email,
-                    full_name: user.displayName || user.email.split('@')[0]
+                    full_name: user.displayName || email
                 })
             });
 
