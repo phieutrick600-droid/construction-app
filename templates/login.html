@@ -46,34 +46,30 @@
     <h4 class="text-center fw-bold text-primary mb-1" style="color: #1e3c72 !important;">🏗️ LÒ KHẢI CONSTRUCTION</h4>
     <p class="text-center text-muted small mb-4">Hệ Thống Quản Lý Doanh Nghiệp & Xây Dựng</p>
 
-    <!-- Thông báo lỗi / thành công -->
-    {% if msg %}
-    <div class="alert alert-{{ msg_type }} text-center py-2 small" role="alert">
-        {{ msg }}
-    </div>
-    {% endif %}
+    <!-- Khung hiển thị thông báo -->
+    <div id="alert-box" class="alert d-none text-center py-2 small" role="alert"></div>
 
     <!-- Tabs Đăng Nhập / Đăng Ký -->
     <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link {% if active_tab != 'register' %}active{% endif %}" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab">Đăng Nhập</button>
+            <button class="nav-link active" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab">Đăng Nhập</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link {% if active_tab == 'register' %}active{% endif %}" id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab">Đăng Ký</button>
+            <button class="nav-link" id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab">Đăng Ký</button>
         </li>
     </ul>
 
     <div class="tab-content" id="pills-tabContent">
         <!-- FORM ĐĂNG NHẬP -->
-        <div class="tab-pane fade {% if active_tab != 'register' %}show active{% endif %}" id="pills-login" role="tabpanel">
-            <form action="/login" method="POST">
+        <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
+            <form id="form-login">
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Tên đăng nhập</label>
-                    <input type="text" name="username" class="form-control" placeholder="Nhập username" required>
+                    <label class="form-label small fw-bold">Email đăng nhập</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="nhapemail@gmail.com" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Mật khẩu</label>
-                    <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
+                    <input type="password" id="login-password" class="form-control" placeholder="Nhập mật khẩu" required>
                 </div>
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-custom">ĐĂNG NHẬP</button>
@@ -82,19 +78,19 @@
         </div>
 
         <!-- FORM ĐĂNG KÝ -->
-        <div class="tab-pane fade {% if active_tab == 'register' %}show active{% endif %}" id="pills-register" role="tabpanel">
-            <form action="/register" method="POST">
+        <div class="tab-pane fade" id="pills-register" role="tabpanel">
+            <form id="form-register">
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Họ và tên</label>
-                    <input type="text" name="full_name" class="form-control" placeholder="Ví dụ: Lò Văn Khải" required>
+                    <input type="text" id="reg-fullname" class="form-control" placeholder="Ví dụ: Lò Văn Khải" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Tên đăng nhập</label>
-                    <input type="text" name="username" class="form-control" placeholder="Tạo username" required>
+                    <label class="form-label small fw-bold">Email đăng ký</label>
+                    <input type="email" id="reg-email" class="form-control" placeholder="taoemail@gmail.com" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Mật khẩu</label>
-                    <input type="password" name="password" class="form-control" placeholder="Tạo mật khẩu" required>
+                    <input type="password" id="reg-password" class="form-control" placeholder="Tạo mật khẩu (tối thiểu 6 ký tự)" required>
                 </div>
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-custom">ĐĂNG KÝ TÀI KHOẢN</button>
@@ -105,5 +101,64 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- TÍCH HỢP FIREBASE SỬ DỤNG MÃ CỦA BẠN -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // MÃ CẤU HÌNH FIREBASE CỦA BẠN
+    const firebaseConfig = {
+      apiKey: "AIzaSyAk5Li2EigAdX58FuoSyg2hh6sPv2xila4",
+      authDomain: "khailoconstruction.firebaseapp.com",
+      projectId: "khailoconstruction",
+      storageBucket: "khailoconstruction.firebasestorage.app",
+      messagingSenderId: "797001552023",
+      appId: "1:797001552023:web:bf1a52249333b2559319d2",
+      measurementId: "G-42CDGZQZP9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    function showAlert(msg, type='danger') {
+        const alertBox = document.getElementById('alert-box');
+        alertBox.className = `alert alert-${type} text-center py-2 small`;
+        alertBox.innerText = msg;
+        alertBox.classList.remove('d-none');
+    }
+
+    // XỬ LÝ ĐĂNG KÝ
+    document.getElementById('form-register').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            showAlert("Đăng ký thành công! Bạn có thể chuyển sang tab Đăng Nhập.", "success");
+        } catch (error) {
+            showAlert("Lỗi đăng ký: " + error.message);
+        }
+    });
+
+    // XỬ LÝ ĐĂNG NHẬP
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            showAlert("Đăng nhập thành công! Đang chuyển hướng...", "success");
+            setTimeout(() => {
+                window.location.href = "/"; // Chuyển sang trang trang chủ quản lý
+            }, 1000);
+        } catch (error) {
+            showAlert("Đăng nhập thất bại: Kiểm tra lại Email hoặc Mật khẩu!");
+        }
+    });
+</script>
+
 </body>
 </html>
