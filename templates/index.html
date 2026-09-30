@@ -18,19 +18,23 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark mb-4">
-    <div class="container-fluid px-4">
-        <span class="navbar-brand mb-0 h1 fs-3 header-title">
-            <i class="fa-solid fa-city me-2"></i>LÒ KHẢI CONSTRUCTION
-        </span>
-        <span class="text-light small">Hệ Thống Quản Lý Doanh Nghiệp & Xây Dựng</span>
-    </div>
-    <div class="text-end text-white small pe-3 pt-2">
-    <span>Xin chào, <b>{{ user_fullname }}</b>!</span> | 
-    <a href="/logout" class="text-warning text-decoration-none fw-bold">Đăng xuất</a>
-</div>
-</nav>
-
+<nav class="navbar navbar-dark mb-4 px-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div>
+                <span class="navbar-brand mb-0 h1 fs-3 header-title">
+                    <i class="fa-solid fa-city me-2"></i>LÒ KHẢI CONSTRUCTION
+                </span>
+                <span class="text-light small ms-2">Hệ Thống Quản Lý Doanh Nghiệp & Xây Dựng</span>
+            </div>
+            
+            <div class="text-white small">
+                <span>Xin chào, <b>{{ user_fullname }}</b>!</span>
+                <span class="mx-2">|</span>
+                <a href="/logout" class="text-warning text-decoration-none fw-bold">Đăng xuất</a>
+            </div>
+        </div>
+    </nav>
+    
 <div class="container-fluid px-4">
     <ul class="nav nav-pills mb-4 bg-white p-2 rounded card flex-row" id="mainTabs" role="tablist">
         <li class="nav-item">
