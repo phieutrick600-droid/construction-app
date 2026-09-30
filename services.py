@@ -123,3 +123,31 @@ class ItemService:
         conn.execute("DELETE FROM hang_muc WHERE ma_hm = ?", (ma_hm,))
         conn.commit()
         conn.close()
+# --- GIỮ NGUYÊN CODE CŨ CỦA BẠN BÊN TRÊN ---
+
+# BỔ SUNG: UserService xử lý Đăng nhập & Đăng ký
+class UserService:
+    @staticmethod
+    def register(username, password, full_name):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("INSERT INTO users (username, password, full_name) VALUES (?, ?, ?)",
+                           (username, password, full_name))
+            conn.commit()
+            return True, "Đăng ký tài khoản thành công! Vui lòng đăng nhập."
+        except Exception as e:
+            return False, "Tên đăng nhập đã tồn tại trên hệ thống!"
+        finally:
+            conn.close()
+
+    @staticmethod
+    def check_login(username, password):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            return User(row['id'], row['username'], row['password'], row['full_name'])
+        return None
