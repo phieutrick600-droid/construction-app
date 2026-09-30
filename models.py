@@ -82,3 +82,32 @@ class Item:
         self.ma_ct = ma_ct
         self.kinh_phi = kinh_phi
         self.tien_do = tien_do
+# --- GIỮ NGUYÊN CODE CŨ CỦA BẠN BÊN TRÊN ---
+
+# BỔ SUNG: Class User
+class User:
+    def __init__(self, id, username, password, full_name):
+        self.id = id
+        self.username = username
+        self.password = password
+        self.full_name = full_name
+
+# Cập nhật hàm khởi tạo DB (Thêm tạo bảng users)
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Tạo bảng users nếu chưa có
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            full_name TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+# Gọi hàm khởi tạo
+init_db()
