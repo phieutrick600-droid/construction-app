@@ -9,16 +9,17 @@ app.secret_key = 'lokhai_construction_secret_key'
 init_db()
 
 
-# --- DANG NHAP / DANG KY / DANG XUAT ---
+# --- TRANG CHỦ / DANG NHAP / DANG KY / DANG XUAT ---
 @app.route("/")
 def index():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
+    # Đã bỏ đoạn 'if user not in session' để Firebase JS có thể tải giao diện chính thành công
     companies = CompanyService.get_all()
     departments = DepartmentService.get_all()
     projects = ProjectService.get_all()
     items = ItemService.get_all()
+
+    # Lấy tên hiển thị nếu có, hoặc để mặc định
+    user_fullname = session.get('user_fullname', 'Người Dùng Firebase')
 
     return render_template(
         'index.html',
@@ -26,13 +27,22 @@ def index():
         departments=departments,
         projects=projects,
         items=items,
-        user_fullname=session.get('user_fullname')
+        user_fullname=user_fullname
     )
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        # Xử lý trường hợp có gửi dữ liệu JSON từ Firebase JS
+        data = request.get_json(silent=True) or request.form
+        email_or_username = data.get('email') or data.get('username')
+        
+        if email_or_username:
+            session['user'] = email_or_username
+            session['user_fullname'] = email_or_username.split('@')[0]
+            return jsonify({'status': 'success', 'redirect': '/'})
+
         username = request.form.get('username')
         password = request.form.get('password')
         user = UserService.check_login(username, password)
@@ -42,6 +52,7 @@ def login():
             return redirect(url_for('index'))
         else:
             return render_template('login.html', msg="Tài khoản hoặc mật khẩu không đúng!", msg_type="danger")
+            
     return render_template('login.html')
 
 
