@@ -13,82 +13,61 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # 1. Bảng Công Ty
     cursor.execute("""
-                   CREATE TABLE IF NOT EXISTS cong_ty
-                   (
-                       ma_cty
-                       TEXT
-                       PRIMARY
-                       KEY,
-                       ten_cty
-                       TEXT
-                       NOT
-                       NULL,
-                       dia_chi
-                       TEXT,
-                       so_dien_thoai
-                       TEXT,
-                       nguoi_dai_dien
-                       TEXT
-                   )
-                   """)
+        CREATE TABLE IF NOT EXISTS cong_ty (
+            ma_cty TEXT PRIMARY KEY,
+            ten_cty TEXT NOT NULL,
+            dia_chi TEXT,
+            so_dien_thoai TEXT,
+            nguoi_dai_dien TEXT
+        )
+    """)
+
+    # 2. Bảng Phòng Ban
     cursor.execute("""
-                   CREATE TABLE IF NOT EXISTS phong_ban
-                   (
-                       ma_pb
-                       TEXT
-                       PRIMARY
-                       KEY,
-                       ten_pb
-                       TEXT
-                       NOT
-                       NULL,
-                       ma_cty
-                       TEXT,
-                       truong_phong
-                       TEXT,
-                       so_nhan_su
-                       INTEGER
-                   )
-                   """)
+        CREATE TABLE IF NOT EXISTS phong_ban (
+            ma_pb TEXT PRIMARY KEY,
+            ten_pb TEXT NOT NULL,
+            ma_cty TEXT,
+            truong_phong TEXT,
+            so_nhan_su INTEGER
+        )
+    """)
+
+    # 3. Bảng Công Trình (giữ đúng tên cong_trinh)
     cursor.execute("""
-                   CREATE TABLE IF NOT EXISTS cong_trinh
-                   (
-                       ma_ct
-                       TEXT
-                       PRIMARY
-                       KEY,
-                       ten_ct
-                       TEXT
-                       NOT
-                       NULL,
-                       dia_diem
-                       TEXT,
-                       chu_dau_tu
-                       TEXT,
-                       trang_thai
-                       TEXT
-                   )
-                   """)
+        CREATE TABLE IF NOT EXISTS cong_trinh (
+            ma_ct TEXT PRIMARY KEY,
+            ten_ct TEXT NOT NULL,
+            dia_diem TEXT,
+            chu_dau_tu TEXT,
+            trang_thai TEXT
+        )
+    """)
+
+    # 4. Bảng Hạng Mục
     cursor.execute("""
-                   CREATE TABLE IF NOT EXISTS hang_muc
-                   (
-                       ma_hm
-                       TEXT
-                       PRIMARY
-                       KEY,
-                       ten_hm
-                       TEXT
-                       NOT
-                       NULL,
-                       ma_ct
-                       TEXT,
-                       kinh_phi
-                       REAL,
-                       tien_do
-                       TEXT
-                   )
-                   """)
+        CREATE TABLE IF NOT EXISTS hang_muc (
+            ma_hm TEXT PRIMARY KEY,
+            ten_hm TEXT NOT NULL,
+            ma_ct TEXT,
+            kinh_phi REAL,
+            tien_do TEXT
+        )
+    """)
+
+    # 5. Bảng Nguời Dùng (Bổ sung mới cho Đăng nhập / Đăng ký)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            role TEXT DEFAULT 'admin'
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -130,9 +109,6 @@ class Item:
         self.tien_do = tien_do
 
 
-import sqlite3
-
-
 class User:
     def __init__(self, id, username, password, full_name, role="admin"):
         self.id = id
@@ -142,152 +118,5 @@ class User:
         self.role = role
 
 
-# --- GIỮ NGUYÊN CODE CŨ CỦA BẠN BÊN TRÊN ---
-
-# BỔ SUNG: Class User
-class User:
-    def __init__(self, id, username, password, full_name):
-        self.id = id
-        self.username = username
-        self.password = password
-        self.full_name = full_name
-
-
-# Cập nhật hàm khởi tạo DB (Thêm tạo bảng users)
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # 1. Bảng users
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS users
-                   (
-                       id
-                       INTEGER
-                       PRIMARY
-                       KEY
-                       AUTOINCREMENT,
-                       username
-                       TEXT
-                       UNIQUE
-                       NOT
-                       NULL,
-                       password
-                       TEXT
-                       NOT
-                       NULL,
-                       full_name
-                       TEXT
-                       NOT
-                       NULL
-                   )
-                   ''')
-
-    # 2. Bảng công ty (cong_ty)
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS cong_ty
-                   (
-                       id
-                       INTEGER
-                       PRIMARY
-                       KEY
-                       AUTOINCREMENT,
-                       ten_cong_ty
-                       TEXT
-                       NOT
-                       NULL,
-                       ma_so_thue
-                       TEXT,
-                       dia_chi
-                       TEXT
-                   )
-                   ''')
-
-    # 3. Bảng phòng ban (phong_ban)
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS phong_ban
-                   (
-                       id
-                       INTEGER
-                       PRIMARY
-                       KEY
-                       AUTOINCREMENT,
-                       ten_phong_ban
-                       TEXT
-                       NOT
-                       NULL,
-                       cong_ty_id
-                       INTEGER,
-                       FOREIGN
-                       KEY
-                   (
-                       cong_ty_id
-                   ) REFERENCES cong_ty
-                   (
-                       id
-                   )
-                       )
-                   ''')
-
-    # 4. Bảng dự án (du_an)
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS du_an
-                   (
-                       id
-                       INTEGER
-                       PRIMARY
-                       KEY
-                       AUTOINCREMENT,
-                       ten_du_an
-                       TEXT
-                       NOT
-                       NULL,
-                       dia_diem
-                       TEXT,
-                       phong_ban_id
-                       INTEGER,
-                       FOREIGN
-                       KEY
-                   (
-                       phong_ban_id
-                   ) REFERENCES phong_ban
-                   (
-                       id
-                   )
-                       )
-                   ''')
-
-    # 5. Bảng hạng mục (hang_muc)
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS hang_muc
-                   (
-                       id
-                       INTEGER
-                       PRIMARY
-                       KEY
-                       AUTOINCREMENT,
-                       ten_hang_muc
-                       TEXT
-                       NOT
-                       NULL,
-                       chi_phi
-                       REAL,
-                       du_an_id
-                       INTEGER,
-                       FOREIGN
-                       KEY
-                   (
-                       du_an_id
-                   ) REFERENCES du_an
-                   (
-                       id
-                   )
-                       )
-                   ''')
-
-    conn.commit()
-    conn.close()
-
-
-# Tự động gọi khởi tạo bảng
+# Gọi khởi tạo toàn bộ CSDL
 init_db()
