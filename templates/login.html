@@ -46,7 +46,7 @@
     <h4 class="text-center fw-bold text-primary mb-1" style="color: #1e3c72 !important;">🏗️ LÒ KHẢI CONSTRUCTION</h4>
     <p class="text-center text-muted small mb-4">Hệ Thống Quản Lý Doanh Nghiệp & Xây Dựng</p>
 
-    <!-- Khung hiển thị thông báo -->
+    <!-- Khung thông báo lỗi / thành công -->
     <div id="alert-box" class="alert d-none text-center py-2 small" role="alert"></div>
 
     <!-- Tabs Đăng Nhập / Đăng Ký -->
@@ -102,12 +102,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- TÍCH HỢP FIREBASE SỬ DỤNG MÃ CỦA BẠN -->
+<!-- TÍCH HỢP FIREBASE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // MÃ CẤU HÌNH FIREBASE CỦA BẠN
     const firebaseConfig = {
       apiKey: "AIzaSyAk5Li2EigAdX58FuoSyg2hh6sPv2xila4",
       authDomain: "khailoconstruction.firebaseapp.com",
@@ -136,7 +135,7 @@
 
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            showAlert("Đăng ký thành công! Bạn có thể chuyển sang tab Đăng Nhập.", "success");
+            showAlert("Đăng ký thành công! Hãy chuyển sang tab Đăng Nhập.", "success");
         } catch (error) {
             showAlert("Lỗi đăng ký: " + error.message);
         }
@@ -150,12 +149,13 @@
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            showAlert("Đăng nhập thành công! Đang chuyển hướng...", "success");
+            showAlert("Đăng nhập thành công! Đang chuyển giao diện...", "success");
             setTimeout(() => {
-                window.location.href = "/"; // Chuyển sang trang trang chủ quản lý
-            }, 1000);
+                // Điều hướng sang trang chính sau khi đăng nhập
+                window.location.href = "/"; 
+            }, 800);
         } catch (error) {
-            showAlert("Đăng nhập thất bại: Kiểm tra lại Email hoặc Mật khẩu!");
+            showAlert("Đăng nhập thất bại: Kiểm tra lại Email/Mật khẩu hoặc Tạo tài khoản trước!");
         }
     });
 </script>
