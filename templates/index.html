@@ -209,7 +209,7 @@
             if (data.length === 0) {
                 const sampleCompanies = [
                     { ma_cty: "CTY01", ten_cty: "Công ty Cổ phần Xây dựng Lò Khải", dia_chi: "Điện Biên", so_dien_thoai: "0865539242", nguoi_dai_dien: "Lò Văn Khải" },
-                    { ma_cty: "CTY02", ten_cty: "Tập đoàn Xây dựng Đặt Hàng", dia_chi: "Hà Nội", so_dien_thoai: "0912345678", nguoi_dai_dien: "Nguyễn Văn A" }
+                    { ma_cty: "CTY36", ten_cty: "Tập đoàn Xây dựng Hoa Thanh", dia_chi: "Thanh Hóa", so_dien_thoai: "0912345678", nguoi_dai_dien: "Nguyễn Văn Đông" }
                 ];
                 for (let c of sampleCompanies) {
                     await fetch('/api/company', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(c) });
