@@ -172,3 +172,13 @@ def update_delete_item(id):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+    # ==========================================
+# THÊM VÀO FILE app.py (API TRA CỨU)
+# ==========================================
+from services import SearchService # Thêm SearchService vào import cũ
+
+@app.route('/api/search', methods=['GET'])
+def search_api():
+    ma_cty = request.args.get('ma_cty', '')
+    result = SearchService.search_by_company(ma_cty)
+    return jsonify(result)
