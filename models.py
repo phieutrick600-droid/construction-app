@@ -155,3 +155,61 @@ class User:
 
 # Tự động khởi tạo DB khi import
 init_db()
+# ==========================================
+# THÊM VÀO CUỐI FILE models.py (TAB TRA CỨU)
+# ==========================================
+def search_company_details(ma_cty):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Truỳ vấn lấy Tên công ty, Tên công trình, Tên hạng mục, Kinh phí và Tiến độ
+    query = """
+        SELECT 
+            c.ten_cty,
+            p.ten_ct,
+            p.dia_diem,
+            i.ten_hm,
+            i.kinh_phi,
+            i.tien_do
+        FROM company c
+        JOIN department d ON c.ma_cty = d.ma_cty
+        JOIN project p ON p.chu_dau_tu LIKE '%' || c.ten_cty || '%' OR p.ma_ct IN (
+            SELECT ma_ct FROM item
+        )
+        JOIN item i ON p.ma_ct = i.ma_ct
+        WHERE c.ma_cty = ?
+    """
+    # Nếu cấu trúc cơ sở dữ liệu đơn giản, truy vấn liên kết trực tiếp:
+    try:
+        cursor.execute("""
+            SELECT c.ten_cty, p.ten_ct, i.ten_hm, i.kinh_phi, i.tien_do
+            FROM company c
+            JOIN project p ON p.chu_dau_tu = c.ten_cty OR p.chu_dau_tu = c.ma_cty
+            JOIN item i ON p.ma_ct = i.ma_ct
+            WHERE c.ma_cty = ?
+        """, (ma_cty,))
+        rows = cursor.fetchall()
+        
+        # Nếu chưa tìm thấy qua chủ đầu tư, trả về danh sách tất cả các hạng mục ứng với dự án
+        if not rows:
+            cursor.execute("""
+                SELECT c.ten_cty, p.ten_ct, i.ten_hm, i.kinh_phi, i.tien_do
+                FROM company c, project p, item i
+                WHERE p.ma_ct = i.ma_ct AND c.ma_cty = ?
+            """, (ma_cty,))
+            rows = cursor.fetchall()
+            
+        result = []
+        for row in rows:
+            result.append({
+                "ten_cty": row[0],
+                "ten_ct": row[1],
+                "ten_hm": row[2],
+                "kinh_phi": row[3],
+                "tien_do": row[4]
+            })
+        conn.close()
+        return result
+    except Exception as e:
+        conn.close()
+        return []
