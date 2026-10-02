@@ -57,7 +57,6 @@
                 <i class="fa-solid fa-list-check me-1"></i> Quản Lý Hạng Mục
             </button>
         </li>
-        <!-- TAB THỨ 5: TRA CỨU -->
         <li class="nav-item">
             <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-search" onclick="loadSearchDropdown()">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> Tra Cứu Hạng Mục
@@ -141,6 +140,7 @@
                         <form id="form-project">
                             <div class="mb-2"><label>Mã Công Trình</label><input type="text" id="p-id" class="form-control" required></div>
                             <div class="mb-2"><label>Tên Công Trình</label><input type="text" id="p-name" class="form-control" required></div>
+                            <div class="mb-2"><label>Thuộc Mã Công Ty</label><input type="text" id="p-cid" class="form-control" placeholder="VD: CTY01" required></div>
                             <div class="mb-2"><label>Địa Điểm</label><input type="text" id="p-loc" class="form-control"></div>
                             <div class="mb-2"><label>Chủ Đầu Tư</label><input type="text" id="p-owner" class="form-control"></div>
                             <div class="mb-2"><label>Trạng Thái</label><input type="text" id="p-status" class="form-control"></div>
@@ -156,7 +156,7 @@
                         <h5 class="card-title"><i class="fa-solid fa-table"></i> Danh Sách Công Trình</h5>
                         <table class="table table-hover mt-2">
                             <thead class="table-light">
-                                <tr><th>Mã CT</th><th>Tên Công Trình</th><th>Địa Điểm</th><th>Chủ Đầu Tư</th><th>Trạng Thái</th><th>Thao Tác</th></tr>
+                                <tr><th>Mã CT</th><th>Tên Công Trình</th><th>Mã CTY</th><th>Địa Điểm</th><th>Chủ Đầu Tư</th><th>Trạng Thái</th><th>Thao Tác</th></tr>
                             </thead>
                             <tbody id="tbl-project"></tbody>
                         </table>
@@ -174,7 +174,7 @@
                         <form id="form-item">
                             <div class="mb-2"><label>Mã Hạng Mục</label><input type="text" id="i-id" class="form-control" required></div>
                             <div class="mb-2"><label>Tên Hạng Mục</label><input type="text" id="i-name" class="form-control" required></div>
-                            <div class="mb-2"><label>Mã Công Trình</label><input type="text" id="i-pid" class="form-control"></div>
+                            <div class="mb-2"><label>Mã Công Trình</label><input type="text" id="i-pid" class="form-control" placeholder="VD: CT01"></div>
                             <div class="mb-2"><label>Kinh Phí (VNĐ)</label><input type="number" id="i-cost" class="form-control"></div>
                             <div class="mb-2"><label>Tiến Độ</label><input type="text" id="i-prog" class="form-control"></div>
                             <div class="d-flex gap-2 mt-3">
@@ -198,7 +198,7 @@
             </div>
         </div>
 
-        <!-- TAB THỨ 5: NỘI DUNG TRA CỨU -->
+        <!-- TAB TRA CỨU -->
         <div class="tab-pane fade" id="tab-search">
             <div class="row">
                 <div class="col-md-4">
@@ -250,7 +250,7 @@
         loadCompany();
     });
 
-    // KHỞI TẠO DỮ LIỆU MẪU ĐỒNG BỘ (ASYNC/AWAIT) HẠN CHẾ LỖI DB LOCKED
+    // KHỞI TẠO DỮ LIỆU MẪU CÓ LIÊN KẾT MÃ CÔNG TY CHUẨN XÁC
     async function seedInitialData() {
         try {
             let res = await fetch('/api/company');
@@ -281,8 +281,8 @@
             data = await res.json();
             if (data.length === 0) {
                 const sampleProjects = [
-                    { ma_ct: "CT01", ten_ct: "Xây dựng Trường học Mường Thanh", dia_diem: "Điện Biên", chu_dau_tu: "Sở GD&ĐT Điện Biên", trang_thai: "Đang Thi Công" },
-                    { ma_ct: "CT02", ten_ct: "Cầu bê tông Kênh 1", dia_diem: "Sơn La", chu_dau_tu: "UBND Huyện", trang_thai: "Hoàn Thành" }
+                    { ma_ct: "CT01", ten_ct: "Xây dựng Trường học Mường Thanh", dia_diem: "Điện Biên", chu_dau_tu: "Sở GD&ĐT Điện Biên", trang_thai: "Đang Thi Công", ma_cty: "CTY01" },
+                    { ma_ct: "CT02", ten_ct: "Cầu bê tông Kênh 1", dia_diem: "Sơn La", chu_dau_tu: "UBND Huyện", trang_thai: "Hoàn Thành", ma_cty: "CTY02" }
                 ];
                 for (let p of sampleProjects) {
                     await fetch('/api/project', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(p) });
@@ -413,7 +413,7 @@
             let h = '';
             data.forEach(p=>{
                 h += `<tr>
-                    <td><b>${p.ma_ct}</b></td><td>${p.ten_ct}</td><td>${p.dia_diem||''}</td><td>${p.chu_dau_tu||''}</td><td>${p.trang_thai||''}</td>
+                    <td><b>${p.ma_ct}</b></td><td>${p.ten_ct}</td><td>${p.ma_cty||''}</td><td>${p.dia_diem||''}</td><td>${p.chu_dau_tu||''}</td><td>${p.trang_thai||''}</td>
                     <td>
                         <button class="btn btn-sm btn-warning me-1" onclick="editProj('${p.ma_ct}')"><i class="fa-solid fa-pen"></i> Sửa</button>
                         <button class="btn btn-sm btn-danger" onclick="delProj('${p.ma_ct}')"><i class="fa-solid fa-trash"></i></button>
@@ -427,6 +427,7 @@
         const body = {
             ma_ct: document.getElementById('p-id').value,
             ten_ct: document.getElementById('p-name').value,
+            ma_cty: document.getElementById('p-cid').value,
             dia_diem: document.getElementById('p-loc').value,
             chu_dau_tu: document.getElementById('p-owner').value,
             trang_thai: document.getElementById('p-status').value
@@ -442,6 +443,7 @@
             document.getElementById('p-id').value = p.ma_ct;
             document.getElementById('p-id').disabled = true;
             document.getElementById('p-name').value = p.ten_ct;
+            document.getElementById('p-cid').value = p.ma_cty || '';
             document.getElementById('p-loc').value = p.dia_diem || '';
             document.getElementById('p-owner').value = p.chu_dau_tu || '';
             document.getElementById('p-status').value = p.trang_thai || '';
@@ -505,7 +507,7 @@
         if(confirm("Xóa hạng mục này?")) fetch('/api/item/'+id, {method:'DELETE'}).then(()=>loadItem());
     }
 
-    // --- LOGIC XỬ LÝ TAB THỨ 5: TRA CỨU ---
+    // --- TRA CỨU ---
     function loadSearchDropdown() {
         fetch('/api/company').then(r => r.json()).then(data => {
             let select = document.getElementById('search-cid');
