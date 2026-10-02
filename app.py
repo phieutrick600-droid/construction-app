@@ -1,4 +1,4 @@
-from flask import Flask, render_template, render_template_string, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import sqlite3
 import os
 
@@ -20,128 +20,80 @@ def init_db():
 
         # Bảng Công ty
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS company (
-                ma_cty TEXT PRIMARY KEY,
-                ten_cty TEXT NOT NULL,
-                dia_chi TEXT,
-                so_dien_thoai TEXT,
-                nguoi_dai_dien TEXT
-            )
-        ''')
+                       CREATE TABLE IF NOT EXISTS company (
+                           ma_cty TEXT PRIMARY KEY,
+                           ten_cty TEXT NOT NULL,
+                           dia_chi TEXT,
+                           so_dien_thoai TEXT,
+                           nguoi_dai_dien TEXT
+                       )
+                       ''')
 
         # Bảng Phòng ban
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS department (
-                ma_pb TEXT PRIMARY KEY,
-                ten_pb TEXT NOT NULL,
-                ma_cty TEXT,
-                truong_phong TEXT,
-                so_nhan_su INTEGER,
-                FOREIGN KEY (ma_cty) REFERENCES company (ma_cty)
-            )
-        ''')
+                       CREATE TABLE IF NOT EXISTS department (
+                           ma_pb TEXT PRIMARY KEY,
+                           ten_pb TEXT NOT NULL,
+                           ma_cty TEXT,
+                           truong_phong TEXT,
+                           so_nhan_su INTEGER,
+                           FOREIGN KEY (ma_cty) REFERENCES company (ma_cty)
+                       )
+                       ''')
 
         # Bảng Công trình
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS project (
-                ma_ct TEXT PRIMARY KEY,
-                ten_ct TEXT NOT NULL,
-                dia_diem TEXT,
-                chu_dau_tu TEXT,
-                trang_thai TEXT,
-                ma_cty TEXT,
-                FOREIGN KEY (ma_cty) REFERENCES company (ma_cty)
-            )
-        ''')
+                       CREATE TABLE IF NOT EXISTS project (
+                           ma_ct TEXT PRIMARY KEY,
+                           ten_ct TEXT NOT NULL,
+                           dia_diem TEXT,
+                           chu_dau_tu TEXT,
+                           trang_thai TEXT,
+                           ma_cty TEXT,
+                           FOREIGN KEY (ma_cty) REFERENCES company (ma_cty)
+                       )
+                       ''')
 
         # Bảng Hạng mục
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS item (
-                ma_hm TEXT PRIMARY KEY,
-                ten_hm TEXT NOT NULL,
-                ma_ct TEXT,
-                kinh_phi REAL,
-                tien_do TEXT,
-                FOREIGN KEY (ma_ct) REFERENCES project (ma_ct)
-            )
-        ''')
+                       CREATE TABLE IF NOT EXISTS item (
+                           ma_hm TEXT PRIMARY KEY,
+                           ten_hm TEXT NOT NULL,
+                           ma_ct TEXT,
+                           kinh_phi REAL,
+                           tien_do TEXT,
+                           FOREIGN KEY (ma_ct) REFERENCES project (ma_ct)
+                       )
+                       ''')
         conn.commit()
 
 
 init_db()
 
 
-# --- GIAO DIỆN ĐĂNG NHẬP ---
-LOGIN_HTML = '''
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - LÒ KHẢI CONSTRUCTION</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #1a252f; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .card-login { width: 100%; max-width: 420px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); border: none; }
-        .header-title { color: #ffc107; font-weight: bold; }
-    </style>
-</head>
-<body>
-<div class="card card-login p-4 bg-white">
-    <div class="text-center mb-4">
-        <h3 class="header-title text-dark"><i class="fa-solid fa-city text-warning me-2"></i>LÒ KHẢI</h3>
-        <p class="text-muted small">Hệ Thống Quản Lý Doanh Nghiệp & Xây Dựng</p>
-    </div>
-    
-    {% if error %}
-    <div class="alert alert-danger p-2 text-center small" role="alert">{{ error }}</div>
-    {% endif %}
-
-    <form method="POST" action="/login">
-        <div class="mb-3">
-            <label class="form-label fw-bold">Email / Tài khoản</label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                <input type="email" name="email" class="form-control" value="phieutrick600@gmail.com" required>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">Mật khẩu</label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu bất kỳ" required>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-2">
-            <i class="fa-solid fa-right-to-bracket me-1"></i> Đăng Nhập
-        </button>
-    </form>
-</div>
-</body>
-</html>
-'''
-
-
 # --- ROUTES AUTHENTICATION ---
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        if email:
-            session['user'] = email
-            return redirect(url_for('index'))
-        return render_template_string(LOGIN_HTML, error="Vui lòng nhập Email!")
-    return render_template_string(LOGIN_HTML)
+    return render_template('login.html')
+
+
+@app.route('/set-session', methods=['POST'])
+def set_session():
+    data = request.json or {}
+    email = data.get('email')
+    if email:
+        session['user'] = email
+        return jsonify({'success': True})
+    return jsonify({'success': False}), 400
 
 
 @app.route('/')
 def index():
-    # Bắt buộc chuyển sang trang Đăng nhập nếu chưa có session
+    # Chỉ tài khoản đã xác thực trên Firebase và được lưu session mới truy cập được
     if 'user' not in session:
         return redirect(url_for('login'))
         
-    user_fullname = session.get('user', 'phieutrick600@gmail.com')
+    user_fullname = session.get('user', 'Tài khoản')
     return render_template('index.html', user_fullname=user_fullname)
 
 
@@ -262,7 +214,7 @@ def del_item(ma_hm):
     return jsonify({'success': True})
 
 
-# --- API TRA CỨU HẠNG MỤC THEO CÔNG TY ---
+# --- API TRA CỨU ---
 @app.route('/api/search', methods=['GET'])
 def api_search():
     ma_cty = request.args.get('ma_cty')
@@ -273,15 +225,14 @@ def api_search():
     cursor = conn.cursor()
 
     query = '''
-        SELECT 
-            p.ten_ct,
-            i.ten_hm,
-            i.kinh_phi,
-            i.tien_do
-        FROM item i
-        JOIN project p ON i.ma_ct = p.ma_ct
-        WHERE p.ma_cty = ?
-    '''
+            SELECT p.ten_ct,
+                   i.ten_hm,
+                   i.kinh_phi,
+                   i.tien_do
+            FROM item i
+                     JOIN project p ON i.ma_ct = p.ma_ct
+            WHERE p.ma_cty = ?
+            '''
     cursor.execute(query, (ma_cty,))
     rows = [dict(r) for r in cursor.fetchall()]
 
