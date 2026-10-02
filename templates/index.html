@@ -57,6 +57,12 @@
                 <i class="fa-solid fa-list-check me-1"></i> Quản Lý Hạng Mục
             </button>
         </li>
+        <!-- TAB THỨ 5: TRA CỨU -->
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-search" onclick="loadSearchDropdown()">
+                <i class="fa-solid fa-magnifying-glass me-1"></i> Tra Cứu Hạng Mục
+            </button>
+        </li>
     </ul>
 
     <div class="tab-content">
@@ -191,6 +197,49 @@
                 </div>
             </div>
         </div>
+
+        <!-- TAB THỨ 5: NỘI DUNG TRA CỨU -->
+        <div class="tab-pane fade" id="tab-search">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h5 class="card-title text-primary"><i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Theo Công Ty</h5>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Chọn Công Ty Cần Tra Cứu:</label>
+                            <select id="search-cid" class="form-select">
+                                <option value="">-- Chọn Công Ty --</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary w-100" onclick="performSearch()">
+                            <i class="fa-solid fa-search me-1"></i> Tra Cứu Hạng Mục & Kinh Phí
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0"><i class="fa-solid fa-list-check"></i> Chi Tiết Hạng Mục Thi Công</h5>
+                            <span class="badge bg-success fs-6" id="search-total-money">Tổng kinh phí: 0 VNĐ</span>
+                        </div>
+                        <table class="table table-hover mt-2">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tên Công Trình</th>
+                                    <th>Hạng Mục Thi Công</th>
+                                    <th>Kinh Phí (VNĐ)</th>
+                                    <th>Tiến Độ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-search-result">
+                                <tr><td colspan="4" class="text-center text-muted">Vui lòng chọn công ty để xem chi tiết</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -209,7 +258,7 @@
             if (data.length === 0) {
                 const sampleCompanies = [
                     { ma_cty: "CTY01", ten_cty: "Công ty Cổ phần Xây dựng Lò Khải", dia_chi: "Điện Biên", so_dien_thoai: "0865539242", nguoi_dai_dien: "Lò Văn Khải" },
-                    { ma_cty: "CTY36", ten_cty: "Tập đoàn Xây dựng Hoa Thanh", dia_chi: "Thanh Hóa", so_dien_thoai: "0912345678", nguoi_dai_dien: "Nguyễn Văn Đông" }
+                    { ma_cty: "CTY02", ten_cty: "Tập đoàn Xây dựng Đặt Hàng", dia_chi: "Hà Nội", so_dien_thoai: "0912345678", nguoi_dai_dien: "Nguyễn Văn A" }
                 ];
                 for (let c of sampleCompanies) {
                     await fetch('/api/company', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(c) });
@@ -275,12 +324,12 @@
         });
     }
     function saveCompany() {
-        const body = { 
-            ma_cty: document.getElementById('c-id').value, 
-            ten_cty: document.getElementById('c-name').value, 
-            dia_chi: document.getElementById('c-addr').value, 
-            so_dien_thoai: document.getElementById('c-phone').value, 
-            nguoi_dai_dien: document.getElementById('c-rep').value 
+        const body = {
+            ma_cty: document.getElementById('c-id').value,
+            ten_cty: document.getElementById('c-name').value,
+            dia_chi: document.getElementById('c-addr').value,
+            so_dien_thoai: document.getElementById('c-phone').value,
+            nguoi_dai_dien: document.getElementById('c-rep').value
         };
         if(!body.ma_cty || !body.ten_cty) return alert("Vui lòng nhập Mã và Tên Công ty!");
         fetch('/api/company', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
@@ -325,12 +374,12 @@
         });
     }
     function saveDept() {
-        const body = { 
-            ma_pb: document.getElementById('d-id').value, 
-            ten_pb: document.getElementById('d-name').value, 
-            ma_cty: document.getElementById('d-cid').value, 
-            truong_phong: document.getElementById('d-head').value, 
-            so_nhan_su: document.getElementById('d-staff').value 
+        const body = {
+            ma_pb: document.getElementById('d-id').value,
+            ten_pb: document.getElementById('d-name').value,
+            ma_cty: document.getElementById('d-cid').value,
+            truong_phong: document.getElementById('d-head').value,
+            so_nhan_su: document.getElementById('d-staff').value
         };
         if(!body.ma_pb || !body.ten_pb) return alert("Vui lòng nhập Mã và Tên Phòng Ban!");
         fetch('/api/department', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
@@ -375,12 +424,12 @@
         });
     }
     function saveProject() {
-        const body = { 
-            ma_ct: document.getElementById('p-id').value, 
-            ten_ct: document.getElementById('p-name').value, 
-            dia_diem: document.getElementById('p-loc').value, 
-            chu_dau_tu: document.getElementById('p-owner').value, 
-            trang_thai: document.getElementById('p-status').value 
+        const body = {
+            ma_ct: document.getElementById('p-id').value,
+            ten_ct: document.getElementById('p-name').value,
+            dia_diem: document.getElementById('p-loc').value,
+            chu_dau_tu: document.getElementById('p-owner').value,
+            trang_thai: document.getElementById('p-status').value
         };
         if(!body.ma_ct || !body.ten_ct) return alert("Vui lòng nhập Mã và Tên Công Trình!");
         fetch('/api/project', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
@@ -425,12 +474,12 @@
         });
     }
     function saveItem() {
-        const body = { 
-            ma_hm: document.getElementById('i-id').value, 
-            ten_hm: document.getElementById('i-name').value, 
-            ma_ct: document.getElementById('i-pid').value, 
-            kinh_phi: document.getElementById('i-cost').value, 
-            tien_do: document.getElementById('i-prog').value 
+        const body = {
+            ma_hm: document.getElementById('i-id').value,
+            ten_hm: document.getElementById('i-name').value,
+            ma_ct: document.getElementById('i-pid').value,
+            kinh_phi: document.getElementById('i-cost').value,
+            tien_do: document.getElementById('i-prog').value
         };
         if(!body.ma_hm || !body.ten_hm) return alert("Vui lòng nhập Mã và Tên Hạng Mục!");
         fetch('/api/item', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) })
@@ -454,6 +503,52 @@
     }
     function delItem(id) {
         if(confirm("Xóa hạng mục này?")) fetch('/api/item/'+id, {method:'DELETE'}).then(()=>loadItem());
+    }
+
+    // --- LOGIC XỬ LÝ TAB THỨ 5: TRA CỨU ---
+    function loadSearchDropdown() {
+        fetch('/api/company').then(r => r.json()).then(data => {
+            let select = document.getElementById('search-cid');
+            select.innerHTML = '<option value="">-- Chọn Công Ty --</option>';
+            data.forEach(c => {
+                select.innerHTML += `<option value="${c.ma_cty}">${c.ma_cty} - ${c.ten_cty}</option>`;
+            });
+        });
+    }
+
+    function performSearch() {
+        let maCty = document.getElementById('search-cid').value;
+        if (!maCty) return alert("Vui lòng chọn một công ty!");
+
+        fetch(`/api/search?ma_cty=${maCty}`)
+            .then(r => r.json())
+            .then(res => {
+                let tbody = document.getElementById('tbl-search-result');
+                tbody.innerHTML = '';
+
+                if (res.success && res.data && res.data.length > 0) {
+                    res.data.forEach(item => {
+                        let formattedCost = Number(item.kinh_phi || 0).toLocaleString('vi-VN') + ' VNĐ';
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><b>${item.ten_ct}</b></td>
+                                <td>${item.ten_hm}</td>
+                                <td class="text-primary fw-bold">${formattedCost}</td>
+                                <td><span class="badge bg-info text-dark">${item.tien_do || '0%'}</span></td>
+                            </tr>
+                        `;
+                    });
+                    let totalFormatted = Number(res.total_money || 0).toLocaleString('vi-VN') + ' VNĐ';
+                    document.getElementById('search-total-money').innerText = `Tổng kinh phí: ${totalFormatted}`;
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Công ty này hiện chưa có hạng mục/công trình nào!</td></tr>`;
+                    document.getElementById('search-total-money').innerText = `Tổng kinh phí: 0 VNĐ`;
+                }
+            })
+            .catch(err => {
+                console.error("Lỗi tra cứu:", err);
+                alert("Đã xảy ra lỗi khi tra cứu!");
+            });
     }
 </script>
 </body>
