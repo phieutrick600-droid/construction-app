@@ -151,3 +151,24 @@ class UserService:
         if row:
             return User(row['id'], row['username'], row['password'], row['full_name'])
         return None
+        # ==========================================
+# THÊM VÀO CUỐI FILE services.py
+# ==========================================
+from models import search_company_details
+
+class SearchService:
+    @staticmethod
+    def search_by_company(ma_cty):
+        if not ma_cty:
+            return {"success": False, "message": "Vui lòng chọn công ty!"}
+        
+        data = search_company_details(ma_cty)
+        
+        # Tính tổng kinh phí
+        total_money = sum(float(item['kinh_phi']) for item in data if item['kinh_phi'])
+        
+        return {
+            "success": True,
+            "data": data,
+            "total_money": total_money
+        }
