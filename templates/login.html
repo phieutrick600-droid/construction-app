@@ -105,7 +105,7 @@
 <!-- TÍCH HỢP FIREBASE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAk5Li2EigAdX58FuoSyg2hh6sPv2xila4",
@@ -127,56 +127,47 @@
         alertBox.classList.remove('d-none');
     }
 
-    // XỬ LÝ ĐĂNG KÝ (Lưu Họ tên vào Firebase Profile & Flask Database)
+    // XỬ LÝ ĐĂNG KÝ
     document.getElementById('form-register').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const fullname = document.getElementById('reg-fullname').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
+        const email = document.getElementById('reg-email').value;
         const password = document.getElementById('reg-password').value;
 
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            
-            // 1. Cập nhật Họ và Tên vào tài khoản Firebase
-            await updateProfile(userCredential.user, { displayName: fullname });
-
-            // 2. Gửi thông tin Họ và Tên về backend Flask để lưu vào CSDL
-            const formData = new FormData();
-            formData.append('username', email);
-            formData.append('password', password);
-            formData.append('full_name', fullname);
-            await fetch('/register', { method: 'POST', body: formData });
-
+            await createUserWithEmailAndPassword(auth, email, password);
             showAlert("Đăng ký thành công! Hãy chuyển sang tab Đăng Nhập.", "success");
+            
+            // Chuyển sang tab đăng nhập tự động
+            const loginTab = new bootstrap.Tab(document.getElementById('pills-login-tab'));
+            loginTab.show();
+            document.getElementById('login-email').value = email;
         } catch (error) {
             showAlert("Lỗi đăng ký: " + error.message);
         }
     });
 
-    // XỬ LÝ ĐĂNG NHẬP (Truyền Họ tên đã đăng ký sang Flask Session)
+    // XỬ LÝ ĐĂNG NHẬP
     document.getElementById('form-login').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
+        const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Truyền email và Họ tên người dùng lấy từ Firebase displayName về Flask
-            await fetch('/login', {
+            
+            // Đồng bộ trạng thái về Flask Session
+            const res = await fetch('/set-session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: user.email,
-                    full_name: user.displayName || email
-                })
+                body: JSON.stringify({ email: userCredential.user.email })
             });
 
-            showAlert("Đăng nhập thành công! Đang chuyển giao diện...", "success");
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 500);
+            if (res.ok) {
+                showAlert("Đăng nhập thành công! Đang chuyển giao diện...", "success");
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 500);
+            }
         } catch (error) {
             showAlert("Đăng nhập thất bại: Kiểm tra lại Email/Mật khẩu hoặc Tạo tài khoản trước!");
         }
