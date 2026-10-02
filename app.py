@@ -1,184 +1,214 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session
-from models import init_db
-from services import CompanyService, DepartmentService, ProjectService, ItemService, UserService
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+import sqlite3
+import os
 
 app = Flask(__name__)
-app.secret_key = 'lokhai_construction_secret_key'
+app.secret_key = 'lo_khai_construction_secret_key'
 
-# Khởi tạo cơ sở dữ liệu khi app chạy
+DATABASE = 'database.db'
+
+def get_db():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Bảng Công ty
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS company (
+                ma_cty TEXT PRIMARY KEY,
+                ten_cty TEXT NOT NULL,
+                dia_chi TEXT,
+                so_dien_thoai TEXT,
+                nguoi_dai_dien TEXT
+            )
+        ''')
+        
+        # Bảng Phòng ban
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS department (
+                ma_pb TEXT PRIMARY KEY,
+                ten_pb TEXT NOT NULL,
+                ma_cty TEXT,
+                truong_phong TEXT,
+                so_nhan_su INTEGER,
+                FOREIGN KEY (ma_cty) REFERENCES company (ma_cty)
+            )
+        ''')
+        
+        # Bảng Công trình (ĐÃ BỔ SUNG MA_CTY)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS project (
+                ma_ct TEXT PRIMARY KEY,
+                ten_ct TEXT NOT NULL,
+                dia_diem TEXT,
+                chu_dau_tu TEXT,
+                trang_thai TEXT,
+                ma_cty TEXT,
+                FOREIGN KEY (ma_cty) REFERENCES company (ma_cty)
+            )
+        ''')
+        
+        # Bảng Hạng mục
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS item (
+                ma_hm TEXT PRIMARY KEY,
+                ten_hm TEXT NOT NULL,
+                ma_ct TEXT,
+                kinh_phi REAL,
+                tien_do TEXT,
+                FOREIGN KEY (ma_ct) REFERENCES project (ma_ct)
+            )
+        ''')
+        conn.commit()
+
 init_db()
 
-
-# --- TRANG CHỦ / DANG NHAP / DANG KY / DANG XUAT ---
-@app.route("/")
+# --- ROUTES NỀN TẢNG ---
+@app.route('/')
 def index():
-    # BẮT BUỘC ĐĂNG NHẬP: Nếu chưa đăng nhập -> Chuyển ngay về trang login
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    companies = CompanyService.get_all()
-    departments = DepartmentService.get_all()
-    projects = ProjectService.get_all()
-    items = ItemService.get_all()
-
-    # Lấy họ tên người dùng đã lưu trong Session khi đăng nhập
-    user_fullname = session.get('user_fullname', 'Khách')
-
-    return render_template(
-        'index.html',
-        companies=companies,
-        departments=departments,
-        projects=projects,
-        items=items,
-        user_fullname=user_fullname
-    )
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        # Trường hợp 1: Nhận JSON từ Firebase / Javascript
-        if request.is_json:
-            data = request.get_json(silent=True) or {}
-            email = data.get('email')
-            full_name = data.get('full_name')
-
-            if email:
-                session['user'] = email
-                # Ưu tiên lấy Họ và Tên từ JavaScript (Firebase displayName) gửi sang
-                if full_name:
-                    session['user_fullname'] = full_name
-                else:
-                    # Tra cứu trong CSDL local nếu không có full_name
-                    user = UserService.check_login(email, None)
-                    if user and getattr(user, 'full_name', None):
-                        session['user_fullname'] = user.full_name
-                    else:
-                        session['user_fullname'] = email.split('@')[0]
-                return jsonify({'status': 'success', 'redirect': '/'})
-
-        # Trường hợp 2: Gửi từ Form đăng nhập chuẩn
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = UserService.check_login(username, password)
-        if user:
-            session['user'] = user.username
-            session['user_fullname'] = getattr(user, 'full_name', user.username)
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html', msg="Tài khoản hoặc mật khẩu không đúng!", msg_type="danger")
-
-    return render_template('login.html')
-
-
-@app.route('/register', methods=['POST'])
-def register():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    full_name = request.form.get('full_name')
-
-    success, message = UserService.register(username, password, full_name)
-    if success:
-        return render_template('login.html', msg=message, msg_type="success", active_tab="login")
-    else:
-        return render_template('login.html', msg=message, msg_type="danger", active_tab="register")
-
+    user_fullname = session.get('user', 'phieutrick600@gmail.com')
+    return render_template('index.html', user_fullname=user_fullname)
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
-
+    return redirect(url_for('index'))
 
 # --- API CÔNG TY ---
-@app.route("/api/company", methods=["GET", "POST"])
-def handle_company():
-    if request.method == "POST":
-        data = request.json or request.form.to_dict()
-        CompanyService.save(data)
-        return jsonify({"msg": "OK"})
-    return jsonify([c.__dict__ for c in CompanyService.get_all()])
-
-
-@app.route("/api/company/<id>", methods=["PUT", "DELETE"])
-def update_delete_company(id):
-    if request.method == "DELETE":
-        CompanyService.delete(id)
+@app.route('/api/company', methods=['GET', 'POST'])
+def api_company():
+    conn = get_db()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        data = request.json
+        cursor.execute('''
+            INSERT OR REPLACE INTO company (ma_cty, ten_cty, dia_chi, so_dien_thoai, nguoi_dai_dien)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (data.get('ma_cty'), data.get('ten_cty'), data.get('dia_chi'), data.get('so_dien_thoai'), data.get('nguoi_dai_dien')))
+        conn.commit()
+        return jsonify({'success': True})
     else:
-        data = request.json or request.form.to_dict()
-        CompanyService.save(data)
-    return jsonify({"msg": "OK"})
+        cursor.execute('SELECT * FROM company')
+        rows = [dict(r) for r in cursor.fetchall()]
+        return jsonify(rows)
 
+@app.route('/api/company/<ma_cty>', methods=['DELETE'])
+def del_company(ma_cty):
+    conn = get_db()
+    conn.execute('DELETE FROM company WHERE ma_cty = ?', (ma_cty,))
+    conn.commit()
+    return jsonify({'success': True})
 
 # --- API PHÒNG BAN ---
-@app.route("/api/department", methods=["GET", "POST"])
-def handle_department():
-    if request.method == "POST":
-        data = request.json or request.form.to_dict()
-        DepartmentService.save(data)
-        return jsonify({"msg": "OK"})
-    return jsonify([d.__dict__ for d in DepartmentService.get_all()])
-
-
-@app.route("/api/department/<id>", methods=["PUT", "DELETE"])
-def update_delete_department(id):
-    if request.method == "DELETE":
-        DepartmentService.delete(id)
+@app.route('/api/department', methods=['GET', 'POST'])
+def api_department():
+    conn = get_db()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        data = request.json
+        cursor.execute('''
+            INSERT OR REPLACE INTO department (ma_pb, ten_pb, ma_cty, truong_phong, so_nhan_su)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (data.get('ma_pb'), data.get('ten_pb'), data.get('ma_cty'), data.get('truong_phong'), data.get('so_nhan_su')))
+        conn.commit()
+        return jsonify({'success': True})
     else:
-        data = request.json or request.form.to_dict()
-        DepartmentService.save(data)
-    return jsonify({"msg": "OK"})
+        cursor.execute('SELECT * FROM department')
+        rows = [dict(r) for r in cursor.fetchall()]
+        return jsonify(rows)
 
+@app.route('/api/department/<ma_pb>', methods=['DELETE'])
+def del_department(ma_pb):
+    conn = get_db()
+    conn.execute('DELETE FROM department WHERE ma_pb = ?', (ma_pb,))
+    conn.commit()
+    return jsonify({'success': True})
 
 # --- API CÔNG TRÌNH ---
-@app.route("/api/project", methods=["GET", "POST"])
-def handle_project():
-    if request.method == "POST":
-        data = request.json or request.form.to_dict()
-        ProjectService.save(data)
-        return jsonify({"msg": "OK"})
-    return jsonify([p.__dict__ for p in ProjectService.get_all()])
-
-
-@app.route("/api/project/<id>", methods=["PUT", "DELETE"])
-def update_delete_project(id):
-    if request.method == "DELETE":
-        ProjectService.delete(id)
+@app.route('/api/project', methods=['GET', 'POST'])
+def api_project():
+    conn = get_db()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        data = request.json
+        cursor.execute('''
+            INSERT OR REPLACE INTO project (ma_ct, ten_ct, dia_diem, chu_dau_tu, trang_thai, ma_cty)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (data.get('ma_ct'), data.get('ten_ct'), data.get('dia_diem'), data.get('chu_dau_tu'), data.get('trang_thai'), data.get('ma_cty')))
+        conn.commit()
+        return jsonify({'success': True})
     else:
-        data = request.json or request.form.to_dict()
-        ProjectService.save(data)
-    return jsonify({"msg": "OK"})
+        cursor.execute('SELECT * FROM project')
+        rows = [dict(r) for r in cursor.fetchall()]
+        return jsonify(rows)
 
+@app.route('/api/project/<ma_ct>', methods=['DELETE'])
+def del_project(ma_ct):
+    conn = get_db()
+    conn.execute('DELETE FROM project WHERE ma_ct = ?', (ma_ct,))
+    conn.commit()
+    return jsonify({'success': True})
 
 # --- API HẠNG MỤC ---
-@app.route("/api/item", methods=["GET", "POST"])
-def handle_item():
-    if request.method == "POST":
-        data = request.json or request.form.to_dict()
-        ItemService.save(data)
-        return jsonify({"msg": "OK"})
-    return jsonify([i.__dict__ for i in ItemService.get_all()])
-
-
-@app.route("/api/item/<id>", methods=["PUT", "DELETE"])
-def update_delete_item(id):
-    if request.method == "DELETE":
-        ItemService.delete(id)
+@app.route('/api/item', methods=['GET', 'POST'])
+def api_item():
+    conn = get_db()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        data = request.json
+        cursor.execute('''
+            INSERT OR REPLACE INTO item (ma_hm, ten_hm, ma_ct, kinh_phi, tien_do)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (data.get('ma_hm'), data.get('ten_hm'), data.get('ma_ct'), data.get('kinh_phi'), data.get('tien_do')))
+        conn.commit()
+        return jsonify({'success': True})
     else:
-        data = request.json or request.form.to_dict()
-        ItemService.save(data)
-    return jsonify({"msg": "OK"})
+        cursor.execute('SELECT * FROM item')
+        rows = [dict(r) for r in cursor.fetchall()]
+        return jsonify(rows)
 
+@app.route('/api/item/<ma_hm>', methods=['DELETE'])
+def del_item(ma_hm):
+    conn = get_db()
+    conn.execute('DELETE FROM item WHERE ma_hm = ?', (ma_hm,))
+    conn.commit()
+    return jsonify({'success': True})
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
-    # ==========================================
-# THÊM VÀO FILE app.py (API TRA CỨU)
-# ==========================================
-from services import SearchService # Thêm SearchService vào import cũ
-
+# --- API TRA CỨU ĐÃ ĐƯỢC CỦA TỐI ƯU SQL ---
 @app.route('/api/search', methods=['GET'])
-def search_api():
-    ma_cty = request.args.get('ma_cty', '')
-    result = SearchService.search_by_company(ma_cty)
-    return jsonify(result)
+def api_search():
+    ma_cty = request.args.get('ma_cty')
+    if not ma_cty:
+        return jsonify({'success': False, 'message': 'Thiếu tham số ma_cty'})
+
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    # JOIN từ item -> project theo ma_cty
+    query = '''
+        SELECT 
+            p.ten_ct,
+            i.ten_hm,
+            i.kinh_phi,
+            i.tien_do
+        FROM item i
+        JOIN project p ON i.ma_ct = p.ma_ct
+        WHERE p.ma_cty = ?
+    '''
+    cursor.execute(query, (ma_cty,))
+    rows = [dict(r) for r in cursor.fetchall()]
+    
+    total_money = sum(r['kinh_phi'] for r in rows if r['kinh_phi'])
+    
+    return jsonify({
+        'success': True,
+        'data': rows,
+        'total_money': total_money
+    })
+
+if __name__ == '__main__':
+    app.run(debug=True)
